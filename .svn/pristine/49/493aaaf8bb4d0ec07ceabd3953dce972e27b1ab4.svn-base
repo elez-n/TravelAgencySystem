@@ -1,0 +1,190 @@
+/***********************************************************************
+ * Module:  LoginView.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class LoginView
+ ***********************************************************************/
+
+package controller;
+
+import java.awt.BorderLayout;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.*;
+import java.util.*;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.*;
+
+
+
+/** @pdOid aea9710b-ccb3-4fc4-8e5d-211fc4640258 */
+public class LoginView extends JFrame {
+	private JTextField usernameField;
+    private JPasswordField passwordField;
+    private JButton loginButton;
+    
+    public LoginView() {
+    	setTitle("Prijava");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(500, 400); // Veća forma
+        setLocationRelativeTo(null); // ✅ Centriraj prozor
+
+        Color backgroundColor = new Color(200, 220, 255); // svijetloplava
+        Color buttonColor = new Color(30, 144, 255);
+        Color hoverColor = new Color(70, 130, 180);
+
+        // Glavni panel (sa BoxLayout vertikalno)
+        JPanel mainPanel = new JPanel();
+        mainPanel.setBackground(backgroundColor);
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+
+        // Logo
+        JLabel logoLabel = new JLabel();
+        logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        try {
+            ImageIcon logoIcon = new ImageIcon("resources/logo.png");
+            Image scaled = logoIcon.getImage().getScaledInstance(300, 180, Image.SCALE_SMOOTH);
+            logoLabel.setIcon(new ImageIcon(scaled));
+        } catch (Exception e) {
+            logoLabel.setText("LOGO"); // ako ne pronađe sliku
+            logoLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        }
+
+        mainPanel.add(Box.createVerticalStrut(20)); // razmak
+        mainPanel.add(logoLabel);
+        mainPanel.add(Box.createVerticalStrut(20));
+
+        // Form panel (username + password + button)
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBackground(backgroundColor);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(15, 10, 15, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        formPanel.add(new JLabel("Korisničko ime:"), gbc);
+
+        gbc.gridx = 1;
+        usernameField = new JTextField(20);
+        formPanel.add(usernameField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        formPanel.add(new JLabel("Lozinka:"), gbc);
+
+        gbc.gridx = 1;
+        passwordField = new JPasswordField(20);
+        formPanel.add(passwordField, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        loginButton = new JButton("Prijavi se");
+        loginButton.setFocusPainted(false);
+        loginButton.setBackground(buttonColor);
+        loginButton.setForeground(Color.WHITE);
+        loginButton.setFont(new Font("Arial", Font.BOLD, 14));
+        loginButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        loginButton.setBorder(BorderFactory.createLineBorder(new Color(0, 102, 204), 1));
+        loginButton.setPreferredSize(new Dimension(120, 40));
+
+        // Hover efekat
+        loginButton.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                loginButton.setBackground(hoverColor);
+            }
+
+            public void mouseExited(MouseEvent e) {
+                loginButton.setBackground(buttonColor);
+            }
+        });
+
+        formPanel.add(loginButton, gbc);
+
+        mainPanel.add(formPanel);
+        mainPanel.add(Box.createVerticalStrut(20));
+
+        add(mainPanel);
+    }
+    
+    public JButton getLoginButton() {
+ 	   return loginButton;
+    }
+    
+    public String getUsername() {
+        return usernameField.getText();
+    }
+
+    public String getPassword() {
+        return new String(passwordField.getPassword());
+    }
+
+    public void addLoginListener(ActionListener listener) {
+        loginButton.addActionListener(listener);
+    }
+
+    public void showMessage(String message) {
+        JOptionPane.showMessageDialog(this, message);
+    }
+    
+	private static final long serialVersionUID = 1L;
+   /** @pdRoleInfo migr=no name=LoginController assc=association3 coll=java.util.Collection impl=java.util.HashSet mult=0..* */
+   public java.util.Collection<LoginController> loginController;
+   
+   
+   
+   /** @pdGenerated default getter */
+   public java.util.Collection<LoginController> getLoginController() {
+      if (loginController == null)
+         loginController = new java.util.HashSet<LoginController>();
+      return loginController;
+   }
+   
+   /** @pdGenerated default iterator getter */
+   public java.util.Iterator getIteratorLoginController() {
+      if (loginController == null)
+         loginController = new java.util.HashSet<LoginController>();
+      return loginController.iterator();
+   }
+   
+   /** @pdGenerated default setter
+     * @param newLoginController */
+   public void setLoginController(java.util.Collection<LoginController> newLoginController) {
+      removeAllLoginController();
+      for (java.util.Iterator iter = newLoginController.iterator(); iter.hasNext();)
+         addLoginController((LoginController)iter.next());
+   }
+   
+   /** @pdGenerated default add
+     * @param newLoginController */
+   public void addLoginController(LoginController newLoginController) {
+      if (newLoginController == null)
+         return;
+      if (this.loginController == null)
+         this.loginController = new java.util.HashSet<LoginController>();
+      if (!this.loginController.contains(newLoginController))
+         this.loginController.add(newLoginController);
+   }
+   
+   /** @pdGenerated default remove
+     * @param oldLoginController */
+   public void removeLoginController(LoginController oldLoginController) {
+      if (oldLoginController == null)
+         return;
+      if (this.loginController != null)
+         if (this.loginController.contains(oldLoginController))
+            this.loginController.remove(oldLoginController);
+   }
+   
+   /** @pdGenerated default removeAll */
+   public void removeAllLoginController() {
+      if (loginController != null)
+         loginController.clear();
+   }
+
+}

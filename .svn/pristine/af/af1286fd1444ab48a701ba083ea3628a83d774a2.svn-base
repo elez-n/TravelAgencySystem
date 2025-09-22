@@ -1,0 +1,80 @@
+
+
+package model;
+
+import java.util.*;
+
+/**
+ * Klasa DbManipulation pruza metode za manipulaciju konekcijama sa bazama podataka.
+ * 
+ * Ova klasa omogucava uspostavljanje i zatvaranje konekcija sa razlicitim tipovima baza podataka
+ * koristeci konfiguraciju ucitanu iz XML fajla. 
+ * 
+ * @author G4
+ */
+public class DbManipulation {
+	
+   /**
+    * Kolekcija konekcija ka bazama podataka. 
+    */
+   public java.util.Collection<DbConnection> dbConnection;
+   
+   
+   /** 
+    * Vraca kolekciju konekcija. Ako kolekcija nije inicijalizovana, kreira se nova.
+    * @return kolekcija konekcija
+    */
+   public java.util.Collection<DbConnection> getDbConnection() {
+      if (dbConnection == null)
+         dbConnection = new java.util.HashSet<DbConnection>();
+      return dbConnection;
+   }
+   
+   
+   /**
+    *  Vraca iterator za kolekciju konkecija.
+    *  */
+   public java.util.Iterator getIteratorDbConnection() {
+      if (dbConnection == null)
+         dbConnection = new java.util.HashSet<DbConnection>();
+      return dbConnection.iterator();
+   }
+   
+   /** Postavlja novu kolekciju konekcija. Prethodne konekcije se brisu.
+     * @param newDbConnection nova kolekcija konekcija */
+   public void setDbConnection(java.util.Collection<DbConnection> newDbConnection) {
+      removeAllDbConnection();
+      for (java.util.Iterator iter = newDbConnection.iterator(); iter.hasNext();)
+         addDbConnection((DbConnection)iter.next());
+   }
+   
+   /** Dodaje novu konekciju u kolekciju, ako vec nije prisutna.
+     * @param newDbConnection konekcija koja se dodaje
+    */
+   public void addDbConnection(DbConnection newDbConnection) {
+      if (newDbConnection == null)
+         return;
+      if (this.dbConnection == null)
+         this.dbConnection = new java.util.HashSet<DbConnection>();
+      if (!this.dbConnection.contains(newDbConnection))
+         this.dbConnection.add(newDbConnection);
+   }
+   
+   /** Uklanja konekciju iz kolekcije, ako postoji.
+     * @param oldDbConnection konekcija koja se uklanja*/
+   public void removeDbConnection(DbConnection oldDbConnection) {
+      if (oldDbConnection == null)
+         return;
+      if (this.dbConnection != null)
+         if (this.dbConnection.contains(oldDbConnection))
+            this.dbConnection.remove(oldDbConnection);
+   }
+   
+   /** Brise sve konekcije iz kolekcije.
+    */
+   public void removeAllDbConnection() {
+      if (dbConnection != null)
+         dbConnection.clear();
+   }
+
+}

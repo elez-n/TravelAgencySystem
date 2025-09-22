@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <title>TransPlan</title>
+    <style>
+        /* Osnovni stilovi */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: #f0f4f8;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background-color: #1e3a8a;
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+        }
+
+        header h1 em {
+            font-style: normal;
+            color: #facc15; /* naglašeni dio */
+        }
+
+        /* Container za sadržaj */
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+
+        /* Paragraf */
+        p {
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        /* Naslovi sekcija */
+        h2 {
+            color: #1e3a8a;
+            border-bottom: 2px solid #facc15;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+
+        /* Liste */
+        ul {
+            margin-left: 20px;
+            padding-left: 0;
+        }
+
+        ul {
+            list-style: none; /* uklanja default bullet-e */
+            margin-left: 20px;
+            padding-left: 0;
+        }
+
+        ul li::before {
+            content: "•";  /* samo jedna tačka */
+            color: #1e3a8a;
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Hover efekti za liste (opcionalno) */
+        ul li:hover {
+            color: #1e40af;
+        }
+    </style>
+</head>
+<body>
+
+
+<header>
+    <img src="logo.png" alt="TransPlan Logo"
+         style="
+            width: 150px;
+            display: block;
+            margin: 0 auto 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+         "
+         onmouseover="this.style.transform='scale(1.1)';"
+         onmouseout="this.style.transform='scale(1)';"
+    >
+    <h1>Aplikacija o agenciji za prevoz putnika - <em>TransPlan</em></h1>
+</header>
+
+<div class="container">
+    <p>
+        Informacioni sistem za podršku u procesu upravljanja agencijom za prevoz putnika predstavlja sveobuhvatno softversko rješenje osmišljeno da unaprijedi i automatizuje ključne poslovne procese u organizaciji prevoza.
+        Sistem omogućava efikasno upravljanje voznim parkom, vozačima, linijama i terminima, obuhvatajući sve aspekte rada, od planiranja i zakazivanja polazaka do prodaje karata i obrade rezervacija.
+        Pored osnovnih funkcija, aplikacija pruža podršku za praćenje vozila u realnom vremenu i komunikaciju sa vozačima, čime se omogućava fleksibilnije upravljanje resursima i povećava kvalitet usluge.
+        Svojim korisnicima informacioni sistem agencije omogućava jednostavan pristup informacijama o rasporedu, dostupnim linijama i cijenama, kao i generisanje i pregled izvještaja, čime se agenciji obezbjeđuje praćenje poslovnih performansi na mjesečnom i godišnjem nivou.
+    </p>
+
+    <p><b>Tehnologije koje su korištene za izradu ovog projekta su:</b></p>
+    <ul>
+        <li>Java Swing za razvoj korisničkog interfejsa</li>
+        <li>SQL Server za rad sa bazom podataka</li>
+        <li>JasperSoft za rad sa izvještajima</li>
+        <li>MVC i State dizajn obrasci</li>
+    </ul>
+
+    <h2>Članovi tima</h2>
+    <ul>
+        <li>Nataša Elez</li>
+        <li>Slobodan Macan</li>
+        <li>Avdo Hrnjić</li>
+        <li>Elena Jakšić</li>
+        <li>Ranko Borovina</li>
+    </ul>
+</div>
+
+<footer>
+    &copy; 2025 TransPlan. Sva prava zadržana.
+</footer>
+
+</body>
+</html>

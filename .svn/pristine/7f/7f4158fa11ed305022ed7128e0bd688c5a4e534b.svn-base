@@ -1,0 +1,162 @@
+package report;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.io.File;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
+import org.jfree.ui.HorizontalAlignment;
+
+import javax.swing.JFileChooser;
+
+
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRResultSetDataSource;
+import net.sf.jasperreports.view.JasperViewer;
+import ar.com.fdvs.dj.domain.builders.DynamicReportBuilder;
+import ar.com.fdvs.dj.domain.builders.FastReportBuilder;
+import ar.com.fdvs.dj.domain.builders.StyleBuilder;
+import ar.com.fdvs.dj.domain.constants.Border;
+import ar.com.fdvs.dj.domain.AutoText;
+import ar.com.fdvs.dj.domain.DynamicReport;
+import ar.com.fdvs.dj.domain.ImageBanner;
+import ar.com.fdvs.dj.core.DynamicJasperHelper;
+import ar.com.fdvs.dj.core.layout.ClassicLayoutManager;
+import ar.com.fdvs.dj.core.layout.HorizontalBandAlignment;
+import ar.com.fdvs.dj.domain.constants.HorizontalAlign;
+import ar.com.fdvs.dj.domain.constants.Page;
+
+public class DynamicReportGenerator {
+
+    private final Connection connection;
+
+    public DynamicReportGenerator(Connection connection) {
+        this.connection = connection;
+    }
+
+    public void generateReport(String storedProcedure) {
+        ResultSet resultSet = null;
+
+        try {
+            CallableStatement cs = connection.prepareCall(storedProcedure);
+            resultSet = cs.executeQuery();
+
+            if (resultSet == null) {
+                JOptionPane.showMessageDialog(null, "Nema podataka za izveštaj.");
+                return;
+            }
+
+            ResultSetMetaData meta = resultSet.getMetaData();
+            int columnCount = meta.getColumnCount();
+
+            // Prikazi dijalog za izbor kolona
+            JPanel panel = new JPanel(new GridLayout(columnCount, 1));
+            JCheckBox[] checkBoxes = new JCheckBox[columnCount];
+
+            for (int i = 1; i <= columnCount; i++) {
+                String colName = meta.getColumnLabel(i);
+                JCheckBox cb = new JCheckBox(colName, true); // default svi izabrani
+                checkBoxes[i - 1] = cb;
+                panel.add(cb);
+            }
+
+            int option = JOptionPane.showConfirmDialog(null, panel, "Izaberite kolone za izveštaj", JOptionPane.OK_CANCEL_OPTION);
+            if (option != JOptionPane.OK_OPTION) {
+                return; // korisnik otkazao
+            }
+
+            // Dinamički build izveštaja
+            FastReportBuilder drb = new FastReportBuilder();
+
+            try {
+                for (int i = 1; i <= columnCount; i++) {
+                    if (checkBoxes[i - 1].isSelected()) {
+                        String colName = meta.getColumnLabel(i);
+                        drb.addColumn(colName, colName, String.class.getName(), 30);
+                    }
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Greška prilikom dodavanja kolona u izveštaj: " + e.getMessage());
+            }
+
+            DynamicReportBuilder drpb = drb
+            	    .setTitle("Napredni izvještaj")
+            	    .setOddRowBackgroundStyle(
+            	        new StyleBuilder(false)
+            	            .setBackgroundColor(new Color(136,214,108))
+            	            .build()
+            	    )
+            	    .setTitleStyle(
+            	        new StyleBuilder(false)
+            	            .setFont(new ar.com.fdvs.dj.domain.constants.Font(22, "Verdana", true))
+            	            .build()
+            	    )
+            	    .setPrintBackgroundOnOddRows(true)
+            	    .setUseFullPageWidth(true)
+            	    .setPageSizeAndOrientation(Page.Page_Legal_Landscape()) // ✅ DODANO
+            	    .addFirstPageImageBanner("resources/logo.png", 100, 100, ImageBanner.Alignment.Right)
+            	    .setHeaderVariablesHeight(20)
+            	    .addAutoText("Datum i vrijeme: " + new java.text.SimpleDateFormat("dd.MM.yyyy. HH:mm")
+            	            .format(new java.util.Date()),
+            	        AutoText.POSITION_HEADER, AutoText.ALIGNMENT_LEFT, 200, new StyleBuilder(true).build()
+            	    )
+            	    .setFooterVariablesHeight(30)
+            	    .addAutoText(AutoText.AUTOTEXT_PAGE_X_SLASH_Y,
+            	        AutoText.POSITION_FOOTER, AutoText.ALIGNMENT_RIGHT, 30, 20
+            	    );
+
+            DynamicReport dr = drb.build();
+
+            JRDataSource jrDataSource = new JRResultSetDataSource(resultSet);
+            JasperPrint jasperPrint = DynamicJasperHelper.generateJasperPrint(dr, new ClassicLayoutManager(), jrDataSource);
+
+            // Opcije za korisnika
+            Object[] choices = {"Print Preview", "Save to PDF", "Cancel"};
+            int userChoice = JOptionPane.showOptionDialog(null,
+                    "Izaberite opciju:",
+                    "Opcije izveštaja",
+                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    choices,
+                    choices[0]);
+
+            if (userChoice == JOptionPane.YES_OPTION) {
+                JasperViewer viewer = new JasperViewer(jasperPrint, false);
+                viewer.setVisible(true);
+
+            } else if (userChoice == JOptionPane.NO_OPTION) {
+                JFileChooser fileChooser = new JFileChooser();
+                int fileChoice = fileChooser.showSaveDialog(null);
+                if (fileChoice == JFileChooser.APPROVE_OPTION) {
+                    File file = fileChooser.getSelectedFile();
+                    try {
+                        JasperExportManager.exportReportToPdfFile(jasperPrint, file.getAbsolutePath());
+                        JOptionPane.showMessageDialog(null, "PDF je sačuvan: " + file.getAbsolutePath());
+                    } catch (JRException e) {
+                        e.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Greška pri snimanju PDF fajla.");
+                    }
+                }
+            } // Cancel - ništa se ne dešava
+
+        } catch (SQLException | JRException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Greška prilikom generisanja izveštaja:\n" + e.getMessage());
+        }
+    }
+}

@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  Toolbar.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class Toolbar
+ ***********************************************************************/
+
+package view;
+
+import java.util.*;
+
+/** @pdOid 4713766d-78e7-437a-8e62-c41d455bf077 */
+public class Toolbar {
+}

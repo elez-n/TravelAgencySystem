@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  LinkedField.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class LinkedField
+ ***********************************************************************/
+
+package view;
+
+import java.util.*;
+
+/** @pdOid ffbbc238-ff62-4abe-9797-3e34c901e9f7 */
+public class LinkedField implements IInputField {
+}

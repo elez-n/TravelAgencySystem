@@ -1,0 +1,94 @@
+package listeners;
+
+import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JDesktopPane;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import view.FormPanel;
+import view.MainView;
+import model.CustomTableModel;
+import model.TreeElement;
+import model.TreeElement.Column;
+import model.states.ActiveState;
+import model.states.SelectionState;
+
+public class TableSelectionListener implements ListSelectionListener {
+
+    private MainView appView;
+
+    public TableSelectionListener(MainView appView) {
+        this.appView = appView;
+    }
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (e.getValueIsAdjusting()) return;
+
+        int selectedRow = appView.getTablePanel().getTable().getSelectedRow();
+        int totalRows = appView.getTablePanel().getTable().getRowCount();
+
+        JDesktopPane desktopPane = appView.getDesktopPane();
+        desktopPane.removeAll();
+        desktopPane.setLayout(new BorderLayout());
+
+        if (selectedRow != -1) {
+
+            JTable table = appView.getTablePanel().getTable();
+            int columnCount = table.getColumnCount();
+            Object[] columnNames = new Object[columnCount];
+            Object[] rowData = new Object[columnCount];
+
+            for (int i = 0; i < columnCount; i++) {
+                columnNames[i] = table.getColumnName(i);
+                rowData[i] = table.getValueAt(selectedRow, i);
+            }
+
+            // Dohvati listu Column objekata iz tableMeta
+            List<Column> metaColumns = new ArrayList<>();
+            for (TreeElement element : appView.getTablePanel().getTableMeta().getAllElements()) {
+                if (element instanceof Column) {
+                    metaColumns.add((Column) element);
+                }
+            }
+
+            appView.setAppState(new SelectionState(appView));
+            appView.getStatusbar().setCurrentRow(selectedRow + 1, totalRows);
+
+            FormPanel formPanel = new FormPanel();
+
+            JSplitPane splitPane = new JSplitPane(
+                    JSplitPane.VERTICAL_SPLIT,
+                    appView.getTablePanel(),
+                    new JScrollPane(formPanel)
+            );
+            splitPane.setDividerLocation(350);
+            splitPane.setResizeWeight(0.7);
+            splitPane.setOneTouchExpandable(true);
+
+            desktopPane.add(splitPane, BorderLayout.CENTER);
+
+            // Prikaz podataka u FormPanel-u
+            CustomTableModel model = (CustomTableModel) appView.getTablePanel().getTable().getModel();
+            System.out.println("=== Debug odabranog reda ===");
+            for (int c = 0; c < model.getColumnCount(); c++) {
+                System.out.println(model.getColumnName(c) + " = " + model.getValueAt(selectedRow, c));
+            }
+            formPanel.displayRow(model, selectedRow);
+
+        } else {
+            appView.setAppState(new ActiveState(appView));
+            appView.getStatusbar().setCurrentRow(0, totalRows);
+            desktopPane.add(appView.getTablePanel(), BorderLayout.CENTER);
+        }
+
+        desktopPane.revalidate();
+        desktopPane.repaint();
+    }
+}

@@ -1,0 +1,179 @@
+/***********************************************************************
+ * Module:  Model.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class Model
+ ***********************************************************************/
+
+package model;
+
+import java.util.*;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import model.states.IAppState;
+
+/** @pdOid 3c235d73-605e-4397-ae16-9bc1f95bf2cc */
+public class Model {
+   /** @pdRoleInfo migr=no name=StoredProcedure assc=association2 coll=java.util.Collection impl=java.util.HashSet mult=0..* type=Aggregation */
+   public java.util.Collection<StoredProcedure> storedProcedure;
+   /** @pdRoleInfo migr=no name=XMLTreeModel assc=association3 coll=java.util.Collection impl=java.util.HashSet mult=0..* type=Aggregation */
+   public java.util.Collection<XMLTreeModel> xMLTreeModel;
+   /** @pdRoleInfo migr=no name=IAppState assc=association5 coll=java.util.Collection impl=java.util.HashSet mult=0..* type=Aggregation */
+   public java.util.Collection<IAppState> iAppState;
+   
+   
+   /** @pdGenerated default getter */
+   public java.util.Collection<StoredProcedure> getStoredProcedure() {
+      if (storedProcedure == null)
+         storedProcedure = new java.util.HashSet<StoredProcedure>();
+      return storedProcedure;
+   }
+   
+   /** @pdGenerated default iterator getter */
+   public java.util.Iterator getIteratorStoredProcedure() {
+      if (storedProcedure == null)
+         storedProcedure = new java.util.HashSet<StoredProcedure>();
+      return storedProcedure.iterator();
+   }
+   
+   /** @pdGenerated default setter
+     * @param newStoredProcedure */
+   public void setStoredProcedure(java.util.Collection<StoredProcedure> newStoredProcedure) {
+      removeAllStoredProcedure();
+      for (java.util.Iterator iter = newStoredProcedure.iterator(); iter.hasNext();)
+         addStoredProcedure((StoredProcedure)iter.next());
+   }
+   
+   /** @pdGenerated default add
+     * @param newStoredProcedure */
+   public void addStoredProcedure(StoredProcedure newStoredProcedure) {
+      if (newStoredProcedure == null)
+         return;
+      if (this.storedProcedure == null)
+         this.storedProcedure = new java.util.HashSet<StoredProcedure>();
+      if (!this.storedProcedure.contains(newStoredProcedure))
+         this.storedProcedure.add(newStoredProcedure);
+   }
+   
+   /** @pdGenerated default remove
+     * @param oldStoredProcedure */
+   public void removeStoredProcedure(StoredProcedure oldStoredProcedure) {
+      if (oldStoredProcedure == null)
+         return;
+      if (this.storedProcedure != null)
+         if (this.storedProcedure.contains(oldStoredProcedure))
+            this.storedProcedure.remove(oldStoredProcedure);
+   }
+   
+   /** @pdGenerated default removeAll */
+   public void removeAllStoredProcedure() {
+      if (storedProcedure != null)
+         storedProcedure.clear();
+   }
+   /** @pdGenerated default getter */
+   public java.util.Collection<XMLTreeModel> getXMLTreeModel() {
+      if (xMLTreeModel == null)
+         xMLTreeModel = new java.util.HashSet<XMLTreeModel>();
+      return xMLTreeModel;
+   }
+   
+   /** @pdGenerated default iterator getter */
+   public java.util.Iterator getIteratorXMLTreeModel() {
+      if (xMLTreeModel == null)
+         xMLTreeModel = new java.util.HashSet<XMLTreeModel>();
+      return xMLTreeModel.iterator();
+   }
+   
+   /** @pdGenerated default setter
+     * @param newXMLTreeModel */
+   public void setXMLTreeModel(java.util.Collection<XMLTreeModel> newXMLTreeModel) {
+      removeAllXMLTreeModel();
+      for (java.util.Iterator iter = newXMLTreeModel.iterator(); iter.hasNext();)
+         addXMLTreeModel((XMLTreeModel)iter.next());
+   }
+   
+   /** @pdGenerated default add
+     * @param newXMLTreeModel */
+   public void addXMLTreeModel(XMLTreeModel newXMLTreeModel) {
+      if (newXMLTreeModel == null)
+         return;
+      if (this.xMLTreeModel == null)
+         this.xMLTreeModel = new java.util.HashSet<XMLTreeModel>();
+      if (!this.xMLTreeModel.contains(newXMLTreeModel))
+         this.xMLTreeModel.add(newXMLTreeModel);
+   }
+   
+   /** @pdGenerated default remove
+     * @param oldXMLTreeModel */
+   public void removeXMLTreeModel(XMLTreeModel oldXMLTreeModel) {
+      if (oldXMLTreeModel == null)
+         return;
+      if (this.xMLTreeModel != null)
+         if (this.xMLTreeModel.contains(oldXMLTreeModel))
+            this.xMLTreeModel.remove(oldXMLTreeModel);
+   }
+   
+   /** @pdGenerated default removeAll */
+   public void removeAllXMLTreeModel() {
+      if (xMLTreeModel != null)
+         xMLTreeModel.clear();
+   }
+   /** @pdGenerated default getter */
+   public java.util.Collection<IAppState> getIAppState() {
+      if (iAppState == null)
+         iAppState = new java.util.HashSet<IAppState>();
+      return iAppState;
+   }
+   
+   /** @pdGenerated default iterator getter */
+   public java.util.Iterator getIteratorIAppState() {
+      if (iAppState == null)
+         iAppState = new java.util.HashSet<IAppState>();
+      return iAppState.iterator();
+   }
+   
+   /** @pdGenerated default setter
+     * @param newIAppState */
+   public void setIAppState(java.util.Collection<IAppState> newIAppState) {
+      removeAllIAppState();
+      for (java.util.Iterator iter = newIAppState.iterator(); iter.hasNext();)
+         addIAppState((IAppState)iter.next());
+   }
+   
+   /** @pdGenerated default add
+     * @param newIAppState */
+   public void addIAppState(IAppState newIAppState) {
+      if (newIAppState == null)
+         return;
+      if (this.iAppState == null)
+         this.iAppState = new java.util.HashSet<IAppState>();
+      if (!this.iAppState.contains(newIAppState))
+         this.iAppState.add(newIAppState);
+   }
+   
+   /** @pdGenerated default remove
+     * @param oldIAppState */
+   public void removeIAppState(IAppState oldIAppState) {
+      if (oldIAppState == null)
+         return;
+      if (this.iAppState != null)
+         if (this.iAppState.contains(oldIAppState))
+            this.iAppState.remove(oldIAppState);
+   }
+   
+   /** @pdGenerated default removeAll */
+   public void removeAllIAppState() {
+      if (iAppState != null)
+         iAppState.clear();
+   }
+
+   private final XMLTreeModel xmlTreeModel;
+
+	public XMLTreeModel getTreeModel() {
+		return xmlTreeModel;
+	}
+
+	public Model() {
+		this.xmlTreeModel = new XMLTreeModel(new DefaultMutableTreeNode());
+	}
+}

@@ -1,0 +1,66 @@
+/***********************************************************************
+ * Module:  LoginController.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class LoginController
+ ***********************************************************************/
+
+package controller;
+
+import java.util.*;
+
+/** @pdOid c8e5c39a-ea33-4ac4-ab90-b002215bd94c */
+public class LoginController {
+   /** @pdRoleInfo migr=no name=Controller assc=association1 coll=java.util.Collection impl=java.util.HashSet mult=0..* */
+   public java.util.Collection<Controller> controller;
+   
+   
+   /** @pdGenerated default getter */
+   public java.util.Collection<Controller> getController() {
+      if (controller == null)
+         controller = new java.util.HashSet<Controller>();
+      return controller;
+   }
+   
+   /** @pdGenerated default iterator getter */
+   public java.util.Iterator getIteratorController() {
+      if (controller == null)
+         controller = new java.util.HashSet<Controller>();
+      return controller.iterator();
+   }
+   
+   /** @pdGenerated default setter
+     * @param newController */
+   public void setController(java.util.Collection<Controller> newController) {
+      removeAllController();
+      for (java.util.Iterator iter = newController.iterator(); iter.hasNext();)
+         addController((Controller)iter.next());
+   }
+   
+   /** @pdGenerated default add
+     * @param newController */
+   public void addController(Controller newController) {
+      if (newController == null)
+         return;
+      if (this.controller == null)
+         this.controller = new java.util.HashSet<Controller>();
+      if (!this.controller.contains(newController))
+         this.controller.add(newController);
+   }
+   
+   /** @pdGenerated default remove
+     * @param oldController */
+   public void removeController(Controller oldController) {
+      if (oldController == null)
+         return;
+      if (this.controller != null)
+         if (this.controller.contains(oldController))
+            this.controller.remove(oldController);
+   }
+   
+   /** @pdGenerated default removeAll */
+   public void removeAllController() {
+      if (controller != null)
+         controller.clear();
+   }
+
+}

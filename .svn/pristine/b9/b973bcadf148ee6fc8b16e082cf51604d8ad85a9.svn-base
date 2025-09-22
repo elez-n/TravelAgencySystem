@@ -1,0 +1,92 @@
+/***********************************************************************
+ * Module:  BrowserPanel.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class BrowserPanel
+ ***********************************************************************/
+
+package view;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.util.*;
+
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
+import javax.swing.tree.TreeSelectionModel;
+
+import listeners.BrowserSelectionListener;
+import listeners.TableSelectionListener;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.BorderFactory;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+
+import model.Model;
+import model.TreeElement;
+
+/** @pdOid 41c2f0c6-f2ff-4d6a-8a1f-c59c0aab4f7b */
+public class BrowserPanel extends JPanel {
+	private static final long serialVersionUID = 1L;
+	private JTree tree = null;
+	private MainView mainView = null;
+
+    	public BrowserPanel(Model model, MainView mainView) {
+    	    this.mainView = mainView;
+    	    setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+    	    tree = new JTree(model.getTreeModel());
+    	    tree.setCellRenderer(new CustomTreeCellRenderer());
+    	    tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+    	    tree.setRowHeight(32);
+    	    // Selektor: kada se klikne na tabelu (leaf), zameni sadržaj glavnog prozora
+    	    tree.addTreeSelectionListener(new TreeSelectionListener() {
+    	        @Override
+    	        public void valueChanged(TreeSelectionEvent e) {
+    	            Object node = tree.getLastSelectedPathComponent();
+    	            if (node instanceof TreeElement.Table) {
+    	                SwingUtilities.invokeLater(() -> {
+    	                    openTable((TreeElement.Table) node);
+    	                });
+    	            }
+    	        }
+    	    });
+
+    	    JScrollPane scrollPane = new JScrollPane(tree);
+
+    	    add(scrollPane);
+
+    	    setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    	    Border blueBorder = BorderFactory.createMatteBorder(2, 2, 0, 2, Color.BLUE);
+    	    setBorder(BorderFactory.createCompoundBorder(blueBorder, getBorder()));
+
+    	    setBackground(Color.decode("#FFFFFF"));
+    	    tree.setBackground(Color.decode("#FFFFFF"));
+    	    tree.addTreeSelectionListener(new BrowserSelectionListener(mainView));
+    	}
+        
+    	private void openTable(TreeElement.Table tableMeta) {
+    	    if (mainView != null) {
+    	    	mainView.getStatusbar().setSelectedTable(tableMeta.getName());
+    	    	
+    	        JDesktopPane desktopPane = mainView.getDesktopPane();
+
+    	        desktopPane.removeAll();
+
+    	        // Postavi BorderLayout da bi komponenta mogla da se rasteže
+    	        desktopPane.setLayout(new BorderLayout());
+
+    	        mainView.tablePanel = new TableFrame(tableMeta, mainView);
+    	        mainView.getStatusbar().setCurrentRow(0, mainView.getTablePanel().getTable().getRowCount());
+    	        // Dodaj tabelu u centar da popuni ceo prostor
+    	        desktopPane.add(mainView.tablePanel, BorderLayout.CENTER);
+
+    	        desktopPane.revalidate();
+    	        desktopPane.repaint();
+    	    } else {
+    	        System.out.println("MainView is null!");
+    	    }
+    	}
+
+    }

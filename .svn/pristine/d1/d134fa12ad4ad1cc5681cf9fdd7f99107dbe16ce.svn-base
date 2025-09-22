@@ -1,0 +1,103 @@
+package view;
+
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+
+import javax.swing.JFormattedTextField;
+import javax.swing.text.DefaultFormatter;
+import javax.swing.text.InternationalFormatter;
+
+import model.TreeElement.Column;
+
+/**
+ * Klasa pruza realizaciju dinamickog kreiranja input polja na osnovu tipova podataka u tabeli.
+ */
+public class FieldGenerator {
+
+    /**
+     * Na osnovu proslijedjene kolone kreira odgovarajuci inputField
+     * 
+     * @param column kolona za koju se kreira input
+     * @return odgovarajuci IInputField (Text, Boolean ili LinkedField)
+     */
+    public static IInputField createInput(Column column) {
+        IInputField input;
+        String label = column.getName();
+        
+        switch(column.getType()) {
+            case "java.lang.String": {
+                DefaultFormatter formatter = new DefaultFormatter();
+                formatter.setOverwriteMode(false);
+                input = new TextField(label, new CustomTextField(column.getSize(), formatter), column);
+                break;
+            }
+            case "java.math.BigDecimal": 
+            case "java.lang.Double": {
+                NumberFormat numFormat = NumberFormat.getInstance();
+                numFormat.setMaximumIntegerDigits(column.getSize());
+                numFormat.setMaximumFractionDigits(column.getScale());
+
+                JFormattedTextField formattedField = new JFormattedTextField(createFormatter(numFormat));
+                input = new TextField(label, formattedField, column);
+                break;
+            }
+            case "java.lang.Short":
+            case "java.lang.Integer":
+            case "java.lang.Long": {
+                NumberFormat numFormat = NumberFormat.getInstance();
+                numFormat.setMaximumIntegerDigits(column.getSize());
+                numFormat.setMaximumFractionDigits(0);
+                numFormat.setParseIntegerOnly(true);
+                JFormattedTextField formattedField = new JFormattedTextField(createFormatter(numFormat));
+                input = new TextField(label, formattedField, column);
+                break;
+            }
+            case "java.lang.Boolean": {
+                input = new BooleanField(column);
+                break;
+            }
+            case "java.sql.Timestamp":
+            case "java.sql.Date": {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                JFormattedTextField formattedField = new JFormattedTextField(dateFormat);
+                input = new TextField(label, formattedField, column);
+                break;
+            }
+            default:
+                throw new IllegalArgumentException("Nepoznati tip: " + column.getType() + " !");
+        }
+
+        // Ako kolona referencira drugu tabelu, može se dodati LinkedField
+        if (column.getRefTable() != null) {    
+            // input = new LinkedField(input, column.getRefTable(), column.getRefColumn(), column);
+        }
+
+        return input;
+    }
+
+ 
+
+    /**
+     * Kreira i vraća {@link DefaultFormatter} sa prilagođenim formatiranjem brojeva.
+     * 
+     * Omogućava da prazna polja budu validna (vraća null) i onemogućava overwrite mod.
+     * 
+     * @param format Format broja koji će koristiti formatter
+     * @return {@link DefaultFormatter} sa zadatim formatom
+     */
+    private static DefaultFormatter createFormatter(NumberFormat format) {
+        InternationalFormatter formatter = new InternationalFormatter(format) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public Object stringToValue(String text) throws java.text.ParseException {
+                if (text == null || text.trim().isEmpty()) {
+                    return null;
+                }
+                return super.stringToValue(text);
+            }
+        };
+        formatter.setOverwriteMode(false);
+        return formatter;
+    }
+}

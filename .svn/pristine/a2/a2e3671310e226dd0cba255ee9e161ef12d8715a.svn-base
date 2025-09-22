@@ -1,0 +1,172 @@
+package model;
+
+import db.DbManipulation;
+import db.StoredProcedures;
+
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+/**
+ * TableModel generički za bilo koju tabelu iz stabla, zasniva se na CRUD procedurama iz XML-a.
+ * Dinamički čita kolone iz ResultSet-a umesto iz XML definicija.
+ */
+public class CustomTableModel extends GeneralTableModel {
+
+    private final TreeElement.Table tableMeta;
+    private final StoredProcedures procedures;
+    private List<String> dynamicColumnNames = new ArrayList<>();
+
+    public CustomTableModel(TreeElement.Table tableMeta) {
+        this.tableMeta = tableMeta;
+        this.procedures = new StoredProcedures(DbManipulation.createConnection());
+        
+        // Inicijalno postavi prazne kolone - će se popuniti kada se učitaju podaci
+        this.columns = new ArrayList<>();
+        this.data = new ArrayList<>();
+    }
+
+    @Override
+    public void getAllData() {
+        try {
+            // Učitaj podatke bez definisanja redosleda kolona
+            this.data = procedures.readAll(tableMeta.getRetrieveSProc(), null, null);
+            
+            // Ako ima podataka, dinamički učitaj nazive kolona iz prvog reda
+            if (!this.data.isEmpty() && !this.data.get(0).isEmpty()) {
+                loadDynamicColumns();
+            }
+            
+            fireTableDataChanged();
+            fireTableStructureChanged(); // Obavesti da se struktura promenila
+        } catch (SQLException e) {
+            e.printStackTrace();
+            this.data = new ArrayList<>();
+            fireTableDataChanged();
+        }
+    }
+    
+    private void loadDynamicColumns() {
+        try {
+            // Pozovi proceduru da dobiješ ResultSetMetaData
+            try (java.sql.ResultSet rs = procedures.executeRetrieve(tableMeta.getRetrieveSProc(), null)) {
+                java.sql.ResultSetMetaData metaData = rs.getMetaData();
+                int columnCount = metaData.getColumnCount();
+                
+                this.columns.clear();
+                this.dynamicColumnNames.clear();
+                
+                for (int i = 1; i <= columnCount; i++) {
+                    String columnName = metaData.getColumnName(i);
+                    this.dynamicColumnNames.add(columnName);
+                    
+                    // Kreiraj Column objekat sa informacijama iz baze
+                    TreeElement.Column column = new TreeElement.Column();
+                    column.name = columnName;
+                    column.code = columnName;
+                    
+                    // Postavi nullable i primary na osnovu meta podataka
+                    column.setNullable(metaData.isNullable(i) == java.sql.ResultSetMetaData.columnNullable);
+                    column.setPrimary(false); // Ne možemo znati iz ResultSet-a
+                    
+                    this.columns.add(column);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Fallback na XML kolone ako ne može da se učitaju iz baze
+            fallbackToXMLColumns();
+        }
+    }
+    
+    private void fallbackToXMLColumns() {
+        this.columns.clear();
+        this.dynamicColumnNames.clear();
+        
+        for (TreeElement element : tableMeta.getAllElements()) {
+            if (element instanceof TreeElement.Column) {
+                this.columns.add((TreeElement.Column) element);
+                this.dynamicColumnNames.add(element.getName());
+            }
+        }
+    }
+
+    @Override
+    public boolean deleteRowById(Object id) {
+        try {
+            List<Object> params = new ArrayList<>();
+            params.add(id);
+            int affected = procedures.executeUpdate(tableMeta.getDeleteSProc(), params);
+            if (affected > 0) {
+                getAllData();
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean getRowById(Object id) {
+        try {
+            List<Object> params = new ArrayList<>();
+            params.add(id);
+            List<List<Object>> rows = procedures.readAll(tableMeta.getRetrieveSProc(), params, null);
+            if (!rows.isEmpty()) {
+                this.data = rows;
+                loadDynamicColumns(); // Učitaj kolone i za pojedinačni red
+                fireTableDataChanged();
+                fireTableStructureChanged();
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean addRow(HashMap<String, Object> params) {
+        try {
+            List<Object> ordered = new ArrayList<>();
+            for (TreeElement.Column column : this.columns) {
+                if (!column.isPrimary()) {
+                    ordered.add(params.get(column.getName()));
+                }
+            }
+            int affected = procedures.executeUpdate(tableMeta.getCreateSProc(), ordered);
+            if (affected > 0) {
+                getAllData();
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public String editRow(HashMap<String, Object> params) {
+        try {
+            List<Object> ordered = new ArrayList<>();
+            for (TreeElement.Column column : this.columns) {
+                ordered.add(params.get(column.getName()));
+            }
+            int affected = procedures.executeUpdate(tableMeta.getUpdateSProc(), ordered);
+            if (affected > 0) {
+                getAllData();
+                return null;
+            }
+            return "No rows updated";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+}
+
+
+

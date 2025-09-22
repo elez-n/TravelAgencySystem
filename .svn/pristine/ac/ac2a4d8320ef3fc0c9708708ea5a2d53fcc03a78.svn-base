@@ -1,0 +1,34 @@
+package listeners;
+
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import model.TreeElement;
+import model.states.ActiveState;
+import model.states.IdleState;
+import view.MainView;
+
+public class BrowserSelectionListener implements TreeSelectionListener {
+
+    private MainView appView;
+
+    public BrowserSelectionListener(MainView appView) {
+        this.appView = appView;
+    }
+
+    @Override
+    public void valueChanged(TreeSelectionEvent e) {
+        Object selectedNode = ((javax.swing.JTree) e.getSource()).getLastSelectedPathComponent();
+
+        if (selectedNode instanceof TreeElement.Table) {
+            // Klik na tabelu → ActiveState
+            appView.setAppState(new ActiveState(appView));
+            appView.setCurrentTable((TreeElement.Table) selectedNode);
+            
+        } else {
+            // Klik na paket/kolonu → samo Idle ako nema otvorene tabele
+            if (!appView.hasOpenTable()) {
+                appView.setAppState(new IdleState(appView));
+            }
+        }
+    }
+}

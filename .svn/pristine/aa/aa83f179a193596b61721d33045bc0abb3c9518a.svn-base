@@ -1,0 +1,66 @@
+/***********************************************************************
+ * Module:  XMLTreeModel.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class XMLTreeModel
+ ***********************************************************************/
+
+package model;
+
+import java.util.*;
+
+/** @pdOid 9ab6aee0-a466-4438-8b80-7ad5eef8fb13 */
+public class XMLTreeModel {
+   /** @pdRoleInfo migr=no name=ParserStrategy assc=association4 coll=java.util.Collection impl=java.util.HashSet mult=0..* type=Aggregation */
+   public java.util.Collection<ParserStrategy> parserStrategy;
+   
+   
+   /** @pdGenerated default getter */
+   public java.util.Collection<ParserStrategy> getParserStrategy() {
+      if (parserStrategy == null)
+         parserStrategy = new java.util.HashSet<ParserStrategy>();
+      return parserStrategy;
+   }
+   
+   /** @pdGenerated default iterator getter */
+   public java.util.Iterator getIteratorParserStrategy() {
+      if (parserStrategy == null)
+         parserStrategy = new java.util.HashSet<ParserStrategy>();
+      return parserStrategy.iterator();
+   }
+   
+   /** @pdGenerated default setter
+     * @param newParserStrategy */
+   public void setParserStrategy(java.util.Collection<ParserStrategy> newParserStrategy) {
+      removeAllParserStrategy();
+      for (java.util.Iterator iter = newParserStrategy.iterator(); iter.hasNext();)
+         addParserStrategy((ParserStrategy)iter.next());
+   }
+   
+   /** @pdGenerated default add
+     * @param newParserStrategy */
+   public void addParserStrategy(ParserStrategy newParserStrategy) {
+      if (newParserStrategy == null)
+         return;
+      if (this.parserStrategy == null)
+         this.parserStrategy = new java.util.HashSet<ParserStrategy>();
+      if (!this.parserStrategy.contains(newParserStrategy))
+         this.parserStrategy.add(newParserStrategy);
+   }
+   
+   /** @pdGenerated default remove
+     * @param oldParserStrategy */
+   public void removeParserStrategy(ParserStrategy oldParserStrategy) {
+      if (oldParserStrategy == null)
+         return;
+      if (this.parserStrategy != null)
+         if (this.parserStrategy.contains(oldParserStrategy))
+            this.parserStrategy.remove(oldParserStrategy);
+   }
+   
+   /** @pdGenerated default removeAll */
+   public void removeAllParserStrategy() {
+      if (parserStrategy != null)
+         parserStrategy.clear();
+   }
+
+}

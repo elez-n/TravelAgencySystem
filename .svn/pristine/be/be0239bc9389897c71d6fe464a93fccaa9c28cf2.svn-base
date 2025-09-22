@@ -1,0 +1,26 @@
+/***********************************************************************
+ * Module:  Controller.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class Controller
+ ***********************************************************************/
+
+package controller;
+
+import java.util.*;
+
+import model.Model;
+import model.states.IdleState;
+import view.MainView;
+
+/** @pdOid bbfeefa8-e935-4359-8b5e-3b1a09e94d53 */
+public class Controller {
+	
+	private MainView mainview;
+	private Model model;
+	
+	public Controller(Model model, MainView mainview) {
+		this.mainview = mainview;
+		this.model = model;
+		mainview.setAppState(new IdleState(mainview));
+	}
+}

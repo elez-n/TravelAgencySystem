@@ -1,0 +1,71 @@
+package model;
+
+import java.util.HashMap;
+import java.util.List;
+
+import javax.swing.table.AbstractTableModel;
+
+import model.TreeElement.Column;
+
+/**
+ * Apstraktna klasa koja predstavlja model tabele za rad sa podacima u tabeli.
+ * Klasa GeneralTableModel proširuje AbstractTableModel i pruža osnovne funkcionalnosti za
+ * rad sa podacima u tabeli, ukljucujuci metode za pristup redovima i kolonama, kao i metode za upravljanje
+ * podacima u tabeli.
+ * @author G1
+ */
+public abstract class GeneralTableModel extends AbstractTableModel {
+	private static final long serialVersionUID = 1L;
+	protected List<Column> columns = null;
+	protected List<List<Object>> data = null;
+	
+	@Override
+	public int getRowCount() {
+	
+		return data.size();
+	}
+
+	@Override
+	public int getColumnCount() {
+		return columns.size();
+	}
+
+	@Override
+	public Object getValueAt(int rowIndex, int columnIndex) {		
+		return data.get(rowIndex).get(columnIndex);
+	}
+	
+	@Override
+	public String getColumnName(int column) {
+		return columns.get(column).getName();
+	}
+	
+	public List<Column> getColumns() {
+		return this.columns;
+	}
+	
+   /** Metoda koja vraća indeks kolone na osnovu njenog naziva.
+    * 
+    * @param name Naziv kolone.
+    * @return Indeks kolone sa datim nazivom, ili -1 ako kolona ne postoji.
+    */
+	public int getIndexOfColumn(String name) {
+		for(int i = 1; i < columns.size(); i++) {
+			if(columns.get(i).getName().equals(name)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	public Column getColumn(int i) {
+		return columns.get(i);
+	}
+	
+	public abstract void getAllData();
+	public abstract boolean deleteRowById(Object id);
+	public abstract boolean getRowById(Object id);
+	public abstract boolean addRow(HashMap<String, Object> params);
+	public abstract String editRow(HashMap<String, Object> params);
+
+}

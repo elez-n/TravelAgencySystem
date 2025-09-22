@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  IInputField.java
+ * Author:  Korisnik
+ * Purpose: Defines the Interface IInputField
+ ***********************************************************************/
+
+package view;
+
+import java.util.*;
+
+/** @pdOid 172614ad-05fa-4b4d-8236-e3670a9b24e4 */
+public interface IInputField {
+}

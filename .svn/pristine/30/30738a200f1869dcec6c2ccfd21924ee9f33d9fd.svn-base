@@ -1,0 +1,68 @@
+
+
+package model;
+
+import java.util.*;
+
+/**
+ *Klasa StoredProcedures je klasa koja služi za rad sa razlicitim stored procedurama.
+ *
+ *Ova klasa omogucava dodavanje, uklanjanje, postavljanje i iteraciju nad kolekcijom objekata
+ *koji predstavljaju manipulaciju nad bazom.
+ *
+ *@author G4
+ *  */
+public class StoredProcedure {
+   
+   public java.util.Collection<DbManipulation> dbManipulation;
+   
+   
+   
+   public java.util.Collection<DbManipulation> getDbManipulation() {
+      if (dbManipulation == null)
+         dbManipulation = new java.util.HashSet<DbManipulation>();
+      return dbManipulation;
+   }
+   
+   
+   public java.util.Iterator getIteratorDbManipulation() {
+      if (dbManipulation == null)
+         dbManipulation = new java.util.HashSet<DbManipulation>();
+      return dbManipulation.iterator();
+   }
+   
+ 
+   public void setDbManipulation(java.util.Collection<DbManipulation> newDbManipulation) {
+      removeAllDbManipulation();
+      for (java.util.Iterator iter = newDbManipulation.iterator(); iter.hasNext();)
+         addDbManipulation((DbManipulation)iter.next());
+   }
+   
+   /** @pdGenerated default add
+     * @param newDbManipulation */
+   public void addDbManipulation(DbManipulation newDbManipulation) {
+      if (newDbManipulation == null)
+         return;
+      if (this.dbManipulation == null)
+         this.dbManipulation = new java.util.HashSet<DbManipulation>();
+      if (!this.dbManipulation.contains(newDbManipulation))
+         this.dbManipulation.add(newDbManipulation);
+   }
+   
+   /** @pdGenerated default remove
+     * @param oldDbManipulation */
+   public void removeDbManipulation(DbManipulation oldDbManipulation) {
+      if (oldDbManipulation == null)
+         return;
+      if (this.dbManipulation != null)
+         if (this.dbManipulation.contains(oldDbManipulation))
+            this.dbManipulation.remove(oldDbManipulation);
+   }
+   
+   /** @pdGenerated default removeAll */
+   public void removeAllDbManipulation() {
+      if (dbManipulation != null)
+         dbManipulation.clear();
+   }
+
+}

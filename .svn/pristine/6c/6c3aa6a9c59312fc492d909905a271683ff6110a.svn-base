@@ -1,0 +1,34 @@
+package db;
+import java.sql.Connection;
+
+public class testConnection {
+	public static void main(String[] args) {
+        // Kreiraj konekciju iz XML konfiguracije
+        DbManipulation dbManipulation = DbManipulation.createConnection();
+
+        if (dbManipulation != null) {
+            Connection conn = dbManipulation.getConnection();
+
+            if (conn != null) {
+                System.out.println("Konekcija uspješno uspostavljena!");
+
+                try {
+                    if (conn.isValid(5)) {
+                        System.out.println("Konekcija je validna.");
+                    } else {
+                        System.out.println("Konekcija nije validna.");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    dbManipulation.closeConnection();
+                }
+            } else {
+                System.out.println("Konekcija nije uspostavljena (conn je null).");
+            }
+        } else {
+            System.out.println("Neuspješno kreiranje konekcije.");
+        }
+    }
+
+}

@@ -1,0 +1,74 @@
+/***********************************************************************
+ * Module:  LinkedField.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class LinkedField
+ ***********************************************************************/
+
+package view;
+
+import java.awt.Component;
+import java.util.*;
+
+/** @pdOid ffbbc238-ff62-4abe-9797-3e34c901e9f7 */
+public class LinkedField implements IInputField {
+
+	@Override
+	public Object getValue() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setValue(Object object) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setName(String name) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setReferenceBtn(Component btn) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setEnabled(boolean enabled) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isPrimary() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isNullable() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setColumnCode(String code) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getColumnCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}

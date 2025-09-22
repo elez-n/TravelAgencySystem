@@ -1,0 +1,66 @@
+/***********************************************************************
+ * Module:  StoredProcedure.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class StoredProcedure
+ ***********************************************************************/
+
+package model;
+
+import java.util.*;
+
+/** @pdOid 54df722d-5c35-4247-8e4a-dd2f9af0e0e7 */
+public class StoredProcedure {
+   /** @pdRoleInfo migr=no name=DbManipulation assc=association7 coll=java.util.Collection impl=java.util.HashSet mult=0..* */
+   public java.util.Collection<DbManipulation> dbManipulation;
+   
+   
+   /** @pdGenerated default getter */
+   public java.util.Collection<DbManipulation> getDbManipulation() {
+      if (dbManipulation == null)
+         dbManipulation = new java.util.HashSet<DbManipulation>();
+      return dbManipulation;
+   }
+   
+   /** @pdGenerated default iterator getter */
+   public java.util.Iterator getIteratorDbManipulation() {
+      if (dbManipulation == null)
+         dbManipulation = new java.util.HashSet<DbManipulation>();
+      return dbManipulation.iterator();
+   }
+   
+   /** @pdGenerated default setter
+     * @param newDbManipulation */
+   public void setDbManipulation(java.util.Collection<DbManipulation> newDbManipulation) {
+      removeAllDbManipulation();
+      for (java.util.Iterator iter = newDbManipulation.iterator(); iter.hasNext();)
+         addDbManipulation((DbManipulation)iter.next());
+   }
+   
+   /** @pdGenerated default add
+     * @param newDbManipulation */
+   public void addDbManipulation(DbManipulation newDbManipulation) {
+      if (newDbManipulation == null)
+         return;
+      if (this.dbManipulation == null)
+         this.dbManipulation = new java.util.HashSet<DbManipulation>();
+      if (!this.dbManipulation.contains(newDbManipulation))
+         this.dbManipulation.add(newDbManipulation);
+   }
+   
+   /** @pdGenerated default remove
+     * @param oldDbManipulation */
+   public void removeDbManipulation(DbManipulation oldDbManipulation) {
+      if (oldDbManipulation == null)
+         return;
+      if (this.dbManipulation != null)
+         if (this.dbManipulation.contains(oldDbManipulation))
+            this.dbManipulation.remove(oldDbManipulation);
+   }
+   
+   /** @pdGenerated default removeAll */
+   public void removeAllDbManipulation() {
+      if (dbManipulation != null)
+         dbManipulation.clear();
+   }
+
+}

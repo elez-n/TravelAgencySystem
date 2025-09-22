@@ -1,0 +1,191 @@
+package model;
+
+import db.DbManipulation;
+import db.StoredProcedures;
+import model.TreeElement.Column;
+import model.TreeElement.Table;
+
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+public class CustomTableModel extends GeneralTableModel {
+
+    private static final long serialVersionUID = 1L;
+    private final Table tableMeta;
+    private final StoredProcedures procedures;
+    private ResultSet resultSet;
+
+    public CustomTableModel(Table tableMeta) {
+        this.tableMeta = tableMeta;
+        this.procedures = new StoredProcedures(DbManipulation.createConnection());
+        this.columns = new ArrayList<>();
+        this.data = new ArrayList<>();
+        loadDataFromProcedure();
+    }
+
+    private void loadDataFromProcedure() {
+        try {
+            resultSet = procedures.executeRetrieve(tableMeta.getRetrieveSProc(), null);
+            setColumnsFromResultSet(resultSet);
+            populateData(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            this.data = new ArrayList<>();
+        }
+        fireTableStructureChanged();
+        fireTableDataChanged();
+        debugColumnTypes();
+    }
+
+    private void setColumnsFromResultSet(ResultSet rs) throws SQLException {
+        ResultSetMetaData meta = rs.getMetaData();
+        int colCount = meta.getColumnCount();
+
+        // PK kolone iz baze
+        Set<String> pkCols = new HashSet<>();
+        try (ResultSet pkRs = procedures.getConnection()
+                .getMetaData().getPrimaryKeys(null, null, tableMeta.getName())) {
+            while (pkRs.next()) {
+                pkCols.add(pkRs.getString("COLUMN_NAME").toLowerCase());
+            }
+        }
+
+        this.columns = new ArrayList<>();
+        for (int i = 1; i <= colCount; i++) {
+            String label = meta.getColumnLabel(i); // alias ili ime
+            String dbName = meta.getColumnName(i); // pravo ime u tabeli
+
+            Column col = new Column(label);
+            col.setType(meta.getColumnClassName(i));
+            col.setSize(meta.getPrecision(i));
+            col.setScale(meta.getScale(i));
+            col.setNullable(meta.isNullable(i) == ResultSetMetaData.columnNullable);
+            col.setAutoIncrement(meta.isAutoIncrement(i));
+            col.setPrimary(pkCols.contains(dbName.toLowerCase()));
+
+            this.columns.add(col);
+
+            System.out.println("Column " + i + ": label=" + label + ", dbName=" + dbName +
+                    ", type=" + col.getType() + ", size=" + col.getSize() +
+                    ", scale=" + col.getScale() + ", PK=" + col.isPrimary() +
+                    ", nullable=" + col.isNullable() + ", autoInc=" + col.isAutoIncrement());
+        }
+    }
+
+    private void populateData(ResultSet rs) throws SQLException {
+        this.data.clear();
+        ResultSetMetaData meta = rs.getMetaData();
+        int colCount = meta.getColumnCount();
+
+        while (rs.next()) {
+            List<Object> row = new ArrayList<>();
+            for (int i = 1; i <= colCount; i++) {
+                row.add(rs.getObject(i));
+            }
+            this.data.add(row);
+        }
+    }
+
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        List<Object> row = data.get(rowIndex);
+        if (columnIndex >= row.size()) return null;
+        return row.get(columnIndex);
+    }
+
+    @Override
+    public void getAllData() {
+        loadDataFromProcedure();
+    }
+
+    @Override
+    public boolean deleteRowById(Object id) {
+        try {
+            List<Object> params = new ArrayList<>();
+            params.add(id);
+            int affected = procedures.executeUpdate(tableMeta.getDeleteSProc(), params);
+            if (affected > 0) {
+                getAllData();
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteRowById(List<Object> ids) {
+        try {
+            int affected = procedures.executeUpdate(tableMeta.getDeleteSProc(), ids);
+            if (affected > 0) {
+                getAllData();
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean addRow(HashMap<String, Object> params) {
+        try {
+            List<Object> ordered = new ArrayList<>();
+            for (Column col : columns) {
+                if (!col.isPrimary()) {
+                    ordered.add(params.get(col.code));
+                }
+            }
+            int affected = procedures.executeUpdate(tableMeta.getCreateSProc(), ordered);
+            if (affected > 0) {
+                getAllData();
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean editRow(HashMap<String, Object> params) {
+    	System.out.println(params);
+    	return procedures.update(tableMeta.getUpdateSProc(), params);
+    }
+
+
+    @Override
+    public boolean getRowById(Object id) {
+        try {
+            List<Object> params = new ArrayList<>();
+            params.add(id);
+            List<List<Object>> rows = procedures.readAll(tableMeta.getRetrieveSProc(), params, null);
+            if (!rows.isEmpty()) {
+                this.data = rows;
+                fireTableStructureChanged();
+                fireTableDataChanged();
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void debugColumnTypes() {
+        System.out.println("===== Column types in model =====");
+        for (int i = 0; i < columns.size(); i++) {
+            Column col = columns.get(i);
+            System.out.println("Column " + i + ": " + col.getName() + " , type = " + col.getType());
+        }
+        System.out.println("===== End of columns =====");
+    }
+}

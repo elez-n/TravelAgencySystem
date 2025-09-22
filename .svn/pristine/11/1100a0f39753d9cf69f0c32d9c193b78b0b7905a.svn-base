@@ -1,0 +1,116 @@
+/***********************************************************************
+ * Module:  FormPanel.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class FormPanel
+ ***********************************************************************/
+
+package view;
+
+import java.util.*;
+
+/** @pdOid acf0258b-010b-4f5a-95ce-bb50216cc113 */
+public class FormPanel {
+   /** @pdRoleInfo migr=no name=Button assc=association7 coll=java.util.Collection impl=java.util.HashSet mult=0..* */
+   public java.util.Collection<Button> button;
+   /** @pdRoleInfo migr=no name=IInputField assc=association8 coll=java.util.Collection impl=java.util.HashSet mult=0..* */
+   public java.util.Collection<IInputField> iInputField;
+   
+   
+   /** @pdGenerated default getter */
+   public java.util.Collection<Button> getButton() {
+      if (button == null)
+         button = new java.util.HashSet<Button>();
+      return button;
+   }
+   
+   /** @pdGenerated default iterator getter */
+   public java.util.Iterator getIteratorButton() {
+      if (button == null)
+         button = new java.util.HashSet<Button>();
+      return button.iterator();
+   }
+   
+   /** @pdGenerated default setter
+     * @param newButton */
+   public void setButton(java.util.Collection<Button> newButton) {
+      removeAllButton();
+      for (java.util.Iterator iter = newButton.iterator(); iter.hasNext();)
+         addButton((Button)iter.next());
+   }
+   
+   /** @pdGenerated default add
+     * @param newButton */
+   public void addButton(Button newButton) {
+      if (newButton == null)
+         return;
+      if (this.button == null)
+         this.button = new java.util.HashSet<Button>();
+      if (!this.button.contains(newButton))
+         this.button.add(newButton);
+   }
+   
+   /** @pdGenerated default remove
+     * @param oldButton */
+   public void removeButton(Button oldButton) {
+      if (oldButton == null)
+         return;
+      if (this.button != null)
+         if (this.button.contains(oldButton))
+            this.button.remove(oldButton);
+   }
+   
+   /** @pdGenerated default removeAll */
+   public void removeAllButton() {
+      if (button != null)
+         button.clear();
+   }
+   /** @pdGenerated default getter */
+   public java.util.Collection<IInputField> getIInputField() {
+      if (iInputField == null)
+         iInputField = new java.util.HashSet<IInputField>();
+      return iInputField;
+   }
+   
+   /** @pdGenerated default iterator getter */
+   public java.util.Iterator getIteratorIInputField() {
+      if (iInputField == null)
+         iInputField = new java.util.HashSet<IInputField>();
+      return iInputField.iterator();
+   }
+   
+   /** @pdGenerated default setter
+     * @param newIInputField */
+   public void setIInputField(java.util.Collection<IInputField> newIInputField) {
+      removeAllIInputField();
+      for (java.util.Iterator iter = newIInputField.iterator(); iter.hasNext();)
+         addIInputField((IInputField)iter.next());
+   }
+   
+   /** @pdGenerated default add
+     * @param newIInputField */
+   public void addIInputField(IInputField newIInputField) {
+      if (newIInputField == null)
+         return;
+      if (this.iInputField == null)
+         this.iInputField = new java.util.HashSet<IInputField>();
+      if (!this.iInputField.contains(newIInputField))
+         this.iInputField.add(newIInputField);
+   }
+   
+   /** @pdGenerated default remove
+     * @param oldIInputField */
+   public void removeIInputField(IInputField oldIInputField) {
+      if (oldIInputField == null)
+         return;
+      if (this.iInputField != null)
+         if (this.iInputField.contains(oldIInputField))
+            this.iInputField.remove(oldIInputField);
+   }
+   
+   /** @pdGenerated default removeAll */
+   public void removeAllIInputField() {
+      if (iInputField != null)
+         iInputField.clear();
+   }
+
+}

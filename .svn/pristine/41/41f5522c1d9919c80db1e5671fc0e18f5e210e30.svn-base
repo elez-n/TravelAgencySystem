@@ -1,0 +1,36 @@
+package listeners;
+
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import view.MainView;
+import model.states.ActiveState;
+import model.states.SelectionState;
+
+public class TableSelectionListener implements ListSelectionListener {
+
+    private MainView appView;
+
+    public TableSelectionListener(MainView appView) {
+        this.appView = appView;
+    }
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (e.getValueIsAdjusting()) return;
+
+        int selectedRow = appView.getTablePanel().getTable().getSelectedRow();
+        int totalRows = appView.getTablePanel().getTable().getRowCount();
+
+        if (selectedRow != -1) {
+            // Postavi stanje na selektovano
+            appView.setAppState(new SelectionState(appView));
+
+            // Ažuriraj status bar
+            appView.getStatusbar().setCurrentRow(selectedRow+1, totalRows);
+        } else {
+            // Ako ništa nije selektovano
+            appView.setAppState(new ActiveState(appView));
+            appView.getStatusbar().setCurrentRow(0, totalRows);
+        }
+    }
+}

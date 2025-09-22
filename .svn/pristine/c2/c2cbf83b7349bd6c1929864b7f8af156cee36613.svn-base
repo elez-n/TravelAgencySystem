@@ -1,0 +1,110 @@
+/***********************************************************************
+ * Module:  Toolbar.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class Toolbar
+ ***********************************************************************/
+
+package view;
+
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.util.*;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JToolBar;
+
+/** @pdOid 4713766d-78e7-437a-8e62-c41d455bf077 */
+public class Toolbar extends JToolBar{
+	private JButton btnFirst, btnPrevious, btnNext, btnLast;
+    private JButton btnNew, btnEdit, btnDelete;
+    private JButton btnAccept, btnCancel;
+    private JButton btnReport;
+
+    public Toolbar() {
+        super("Toolbar");
+        setFloatable(false);
+
+        // Kreiranje dugmadi sa ikonama i tooltipovima
+        btnFirst = createButton("first.png", "First");
+        btnPrevious = createButton("previous.png", "Previous");
+        btnNext = createButton("next.png", "Next");
+        btnLast = createButton("last.png", "Last");
+
+        btnNew = createButton("new.png", "New");
+        btnEdit = createButton("edit.png", "Edit");
+        btnDelete = createButton("delete.png", "Delete");
+
+        btnAccept = createButton("accept.png", "Accept");
+        btnCancel = createButton("cancel.png", "Cancel");
+
+        btnReport = createButton("report.png", "Report");
+
+        // Dodavanje dugmadi u Toolbar, grupisano
+        add(btnFirst);
+        add(btnPrevious);
+        add(btnNext);
+        add(btnLast);
+
+        addSeparator();
+
+        add(btnNew);
+        add(btnEdit);
+        add(btnDelete);
+
+        addSeparator();
+
+        add(btnAccept);
+        add(btnCancel);
+
+        addSeparator();
+
+        add(btnReport);
+
+        // Početno stanje - svi dugmići disabled
+        setAllButtonsEnabled(true);
+    }
+        
+        private JButton createButton(String iconFileName, String toolTip) {
+    		Toolkit toolkit = Toolkit.getDefaultToolkit();
+        	ImageIcon icon = new ImageIcon(toolkit.getImage("resources/" + iconFileName));
+        	Image scaledImage = icon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH);
+            ImageIcon scaledIcon = new ImageIcon(scaledImage);
+            JButton button = new JButton(scaledIcon);
+            button.setToolTipText(toolTip);
+            button.setEnabled(false);
+            return button;
+        }
+
+        // Metoda za omogućavanje/ onemogućavanje svih dugmadi
+        public void setAllButtonsEnabled(boolean enabled) {
+            btnFirst.setEnabled(enabled);
+            btnPrevious.setEnabled(enabled);
+            btnNext.setEnabled(enabled);
+            btnLast.setEnabled(enabled);
+
+            btnNew.setEnabled(enabled);
+            btnEdit.setEnabled(enabled);
+            btnDelete.setEnabled(enabled);
+
+            btnAccept.setEnabled(enabled);
+            btnCancel.setEnabled(enabled);
+
+            btnReport.setEnabled(enabled);
+        }
+
+        // Dodaj još gettere za dugmad ako trebaš da vežeš akcije kasnije
+        public JButton getBtnFirst() { return btnFirst; }
+        public JButton getBtnPrevious() { return btnPrevious; }
+        public JButton getBtnNext() { return btnNext; }
+        public JButton getBtnLast() { return btnLast; }
+
+        public JButton getBtnNew() { return btnNew; }
+        public JButton getBtnEdit() { return btnEdit; }
+        public JButton getBtnDelete() { return btnDelete; }
+
+        public JButton getBtnAccept() { return btnAccept; }
+        public JButton getBtnCancel() { return btnCancel; }
+
+        public JButton getBtnReport() { return btnReport; }
+}

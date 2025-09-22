@@ -1,0 +1,166 @@
+package listeners;
+
+import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
+
+import db.DbManipulation;
+import model.states.EditState;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
+import view.MainView;
+
+import javax.swing.JFileChooser;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import report.DynamicReportGenerator;
+
+/**
+ * MenubarButtonActionListener je klasa koja sluzi kao listener za akcije koje se
+ * pokrecu izborom opcija iz menija u aplikaciji.
+ * 
+ * @author G4
+ */
+
+public class MenubarButtonActionListener implements ActionListener {
+
+	
+	/**
+	 * Obrada akcije pokrenute izborom opcije iz menija.
+	 * Na osnovu {@link ActionEvent#getActionCommand()} bira se odgovarajuca operacija.
+	 * 
+	 * @param e dogadjaj koji sadrzi informacije o izabranoj opciji
+	 * 
+	 */
+	
+	final DbManipulation instance = DbManipulation.dbManipulations.get(0);
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		JPopupMenu menuItem = (JPopupMenu) ((JMenuItem) e.getSource()).getParent();
+		MainView window = (MainView) SwingUtilities
+				.getWindowAncestor((JMenuBar) ((JMenuItem) menuItem.getInvoker()).getParent());
+		
+		Connection conn = DbManipulation.dbManipulations.get(0).getConnection();
+		
+		switch (e.getActionCommand()) {
+		case "new":
+			window.getAppState().handleCreate();
+			break;
+		case "edit":
+			window.setAppState(new EditState(window));
+			window.getAppState().handleChange();
+			break;
+		case "next":
+			window.getAppState().handleNext();
+			break;
+		case "previous":
+			window.getAppState().handlePrev();
+			break;
+		case "last":
+			window.getAppState().handleLast();
+			break;
+		case "delete":
+			window.getAppState().handleDelete();
+			break;
+		case "first":
+			window.getAppState().handleFirst();
+			break;
+		case "accept":
+			window.getAppState().handleSubmit();
+			break;
+		case "cancel":
+			window.getAppState().handleCancel();
+			break;
+		case "about":
+			if (Desktop.isDesktopSupported()) {
+			    Desktop desktop = Desktop.getDesktop();
+			    File htmlFile = new File("resources/about.html");
+			    try {
+			        desktop.browse(htmlFile.toURI());
+			    } catch (IOException er) {
+			        er.printStackTrace();
+			    }
+			}
+
+		case "apIzvjestaj":
+			try {
+				String reportPath = "reports\\AkcijskePonude.jrxml";
+				JasperReport jr = JasperCompileManager.compileReport(reportPath);
+				JasperPrint jp = JasperFillManager.fillReport(jr, null,conn);
+				JasperViewer.viewReport(jp, false);
+			} catch (JRException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			break;
+		case "ppIzvjestaj":
+			try {
+				String reportPath = "reports\\AkcijskePonude.jrxml";
+				JasperReport jr = JasperCompileManager.compileReport(reportPath);
+				JasperPrint jp = JasperFillManager.fillReport(jr, null,conn);
+				JasperViewer.viewReport(jp, false);
+			} catch (JRException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			break;
+		case "vpIzvjestaj":
+			try {
+				String reportPath = "reports\\VozniPark.jrxml";
+				JasperReport jr = JasperCompileManager.compileReport(reportPath);
+				JasperPrint jp = JasperFillManager.fillReport(jr, null,conn);
+				JasperViewer.viewReport(jp, false);
+			} catch (JRException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			break;
+		case "pIzvjestaj":
+			try {
+				String reportPath = "reports\\AkcijskePonude.jrxml";
+				JasperReport jr = JasperCompileManager.compileReport(reportPath);
+				JasperPrint jp = JasperFillManager.fillReport(jr, null,conn);
+				JasperViewer.viewReport(jp, false);
+			} catch (JRException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			break;
+		case "vIzvjestaj":
+			try {
+				String reportPath = "reports\\AkcijskePonude.jrxml";
+				JasperReport jr = JasperCompileManager.compileReport(reportPath);
+				JasperPrint jp = JasperFillManager.fillReport(jr, null,conn);
+				JasperViewer.viewReport(jp, false);
+			} catch (JRException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			break;
+		case "vnpIzvjestaj":
+			DynamicReportGenerator generator = new DynamicReportGenerator(conn);
+			generator.generateReport("{call pisg4.Izvjestaj_VoziloNaPutovanju()}");
+			break;
+		}
+	}
+}

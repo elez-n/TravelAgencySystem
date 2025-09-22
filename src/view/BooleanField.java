@@ -1,0 +1,143 @@
+package view;
+
+import java.awt.Component;
+
+import javax.swing.ButtonGroup;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.SwingUtilities;
+import javax.swing.border.TitledBorder;
+
+import model.TreeElement.Column;
+/**
+ * Klasa koja predstavlja grafički korisnički interfejs za unos boolean vrijednosti (True/False) u formi.
+ * Ova klasa koristi dva radio dugmeta ("Da" i "Ne") za izbor između dvije moguće vrijednosti.
+ * 
+ * @author G4
+ */
+ 
+public class BooleanField extends JPanel implements IInputField {
+
+    private static final long serialVersionUID = 1L;
+
+    private final JRadioButton btnTrue = new JRadioButton("Da");
+    private final JRadioButton btnFalse = new JRadioButton("Ne");
+    private final ButtonGroup btnGroup = new ButtonGroup();
+
+    private final Column column;
+    private Boolean value;
+
+    
+    /**
+     * Konstruktor kreira novo boolean polje na osnovu informacije o koloni.
+     * 
+     * @param column kolona modela podataka koja se vezuje za ovo polje
+     */
+    public BooleanField(Column column) {
+       
+        this.column = column;
+
+        String title = column.getName();
+        if (!column.isNullable()) {
+            title += "*";
+        }
+        TitledBorder border = new TitledBorder(title);
+
+        
+        setBorder(border);
+
+        btnGroup.add(btnTrue);
+        btnGroup.add(btnFalse);
+        
+        btnTrue.addActionListener((e) -> setValue(true));
+		btnFalse.addActionListener((e) -> setValue(false));
+
+        add(btnTrue);
+        add(btnFalse);
+    }
+
+    @Override
+    public Object getValue() {
+        return value;
+    }
+
+    @Override
+    public void setValue(Object object) {
+        if (object instanceof Boolean) {
+            value = (Boolean) object;
+        } else if (object instanceof Number) {
+            value = ((Number) object).intValue() != 0;
+        } else if (object instanceof String) {
+            String s = ((String) object).trim().toLowerCase();
+            if (s.equals("da") || s.equals("yes") || s.equals("true") || s.equals("1")) {
+                value = true;
+            } else if (s.equals("ne") || s.equals("no") || s.equals("false") || s.equals("0")) {
+                value = false;
+            } else {
+                value = null; 
+            }
+        } else {
+            value = null;
+        }
+
+        SwingUtilities.invokeLater(this::handleValueChanged);
+    }
+
+
+    
+    /**
+     * Pomoćna metoda za ažuriranje stanja radio dugmadi na osnovu vrijednosti.
+     */
+    private void handleValueChanged() {
+        if (value != null) {
+            if (value) {
+                btnTrue.setSelected(true);
+            } else {
+                btnFalse.setSelected(true);
+            }
+        } else {
+            btnGroup.clearSelection();
+        }
+    }
+
+    @Override
+    public void setReferenceBtn(Component btn) {
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        btnTrue.setEnabled(enabled);
+        btnFalse.setEnabled(enabled);
+    }
+
+    @Override
+    public boolean isPrimary() {
+        return false;
+    }
+
+    @Override
+    public boolean isNullable() {
+        return column.isNullable();
+    }
+
+    @Override
+    public String getName() {
+        return column.getName();
+    }
+
+	@Override
+	public void setColumnCode(String code) {
+		
+	}
+
+	@Override
+	public String getColumnCode() {
+		return null;
+	}
+
+	@Override
+	public boolean isAutoIncrement() {
+		return false;
+	}
+}
+

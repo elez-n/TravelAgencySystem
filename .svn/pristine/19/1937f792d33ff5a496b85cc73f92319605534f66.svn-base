@@ -1,0 +1,194 @@
+package db;
+
+import java.sql.Connection;
+import java.util.List;
+import java.util.Vector;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+
+
+/**
+ * Klasa {@code DbManipulation} pruža metode za manipulaciju konekcijama sa bazom podataka.
+ * 
+ * Ova klasa omogućava uspostavljanje i zatvaranje konekcija sa različitim tipovima baza podataka
+ * koristeći konfiguraciju učitanu iz XML fajla (npr. {@code xml/xmlG4.xml}).
+ * 
+ * 
+ * 
+ * Implementirana je logika keširanja konekcija, tako da se za iste parametre (adresa, port, baza,
+ * korisničko ime i lozinka) ne kreira nova konekcija, već se koristi postojeća ukoliko je važeća.
+ *
+ *@author G4
+ */
+public class DbManipulation {
+    
+    /**
+     * Lista svih aktivnih konekcija ka bazi.
+     */
+    public static List<DbManipulation> dbManipulations = new Vector<>();
+    
+    /**
+     * Objekat konekcije ka bazi (enkapsulira detalje konekcije).
+     */
+    private dbConnection dbConnection = null;
+    
+    /**
+     * XML dokument sa konfiguracijom konekcije.
+     */
+    static Document document = null;
+
+    /**
+     * XPath objekti za parsiranje XML fajla.
+     */
+    static XPathExpression xPathExpression = null;
+    static XPath xPath = null;
+    
+    /**
+     * Vraća trenutni {@link dbConnection} objekat.
+     * @return instanca klase {@code dbConnection} ako postoji, inače {@code null}.
+     */
+    public dbConnection getDbConnection() {
+        return dbConnection;
+    }
+    
+    /**
+     * Privatni konstruktor koji kreira konekciju ka bazi koristeći zadate parametre.
+     * @param address adresa servera baze
+     * @param port port baze
+     * @param dbName naziv baze
+     * @param user korisničko ime
+     * @param password lozinka
+     */
+    private DbManipulation(String address, String port, String dbName, String user, String password) {
+        dbConnection = new MSSQLjdbcConnection();
+        dbConnection.GetConnection(address, port, dbName, user, password);
+    }
+
+    /**
+     * Kreira novu konekciju ka bazi ili vraća postojeću ako već postoji validna konekcija
+     * sa istim parametrima. Konfiguracija se učitava iz XML fajla.
+     * <p>
+     * Ako konekcija postoji ali više nije validna, biće zatvorena i kreirana nova.
+     * </p>
+     * 
+     * @return instanca klase {@code DbManipulation} sa aktivnom konekcijom, 
+     *         ili {@code null} u slučaju greške.
+     */
+    public static DbManipulation createConnection() {
+        try {
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newDefaultInstance();
+            DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+
+            document = builder.parse("xml/xmlG4.xml");
+
+            XPathFactory xPathFactory = XPathFactory.newInstance();
+            xPath = xPathFactory.newXPath();
+
+            Node connection = (Node) xPath.compile("/*/connection").evaluate(document, XPathConstants.NODE);
+
+            String address = connection.getAttributes().getNamedItem("address").getNodeValue();
+            String port = connection.getAttributes().getNamedItem("port").getNodeValue();
+            String dbName = connection.getAttributes().getNamedItem("database").getNodeValue();
+            String user = connection.getAttributes().getNamedItem("username").getNodeValue();
+            String password = connection.getAttributes().getNamedItem("password").getNodeValue();
+
+            if (!(dbManipulations.size() > 0)) {
+                DbManipulation dbManipulation = new DbManipulation(address, port, dbName, user, password);
+                dbManipulations.add(dbManipulation);
+                return dbManipulation;
+            } else {
+                for (DbManipulation dbManipulation : dbManipulations) {
+                    if (dbManipulation.dataExists(address, port, dbName, user, password)) {
+                        if (dbManipulation.isConnectionValid(5)) {
+                            return dbManipulation;
+                        } else {
+                            dbManipulation.closeConnection();
+                            DbManipulation manipulation = new DbManipulation(address, port, dbName, user, password);
+                            dbManipulations.add(manipulation);
+                            return manipulation;
+                        }
+                    } else {
+                        DbManipulation manipulation = new DbManipulation(address, port, dbName, user, password);
+                        dbManipulations.add(manipulation);
+                        return manipulation;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Provjerava da li već postoji konekcija sa zadatim parametrima.
+     * @param address adresa servera
+     * @param port port baze
+     * @param dbName naziv baze
+     * @param user korisničko ime
+     * @param password lozinka
+     * @return {@code true} ako konekcija postoji, {@code false} ako ne.
+     */
+    private boolean dataExists(String address, String port, String dbName, String user, String password) {
+        return dbConnection.getAddress().equals(address)
+                && dbConnection.getPort().equals(port)
+                && dbConnection.getDbName().equals(dbName)
+                && dbConnection.getUser().equals(user)
+                && dbConnection.getPassword().equals(password);
+    }
+
+    /**
+     * Provjerava da li je konekcija još uvijek validna.
+     * @param timeout vrijeme u sekundama za provjeru validnosti
+     * @return {@code true} ako je konekcija validna, {@code false} inače
+     */
+    private boolean isConnectionValid(int timeout) {
+        if (dbConnection.isConnectionOpen()) {
+            return dbConnection.isConnectionValid(timeout);
+        }
+        return false;
+    }
+
+    /**
+     * Zatvara trenutnu konekciju i uklanja je iz liste {@link #dbManipulations}.
+     */
+    public void closeConnection() {
+        int index = dbManipulations.indexOf(this);
+        if (dbManipulations.size() > 0 && index != -1) {
+            dbConnection = dbManipulations.get(index).getDbConnection();
+        }
+        if (dbConnection != null) {
+            dbConnection.closeConnection();
+            if (index != -1) {
+                dbManipulations.remove(index);
+            }
+        }
+    }
+
+    /**
+     * Vraća {@link Connection} objekat iz {@link dbConnection}.
+     * @return instanca {@link Connection} ako postoji, inače {@code null}.
+     */
+    public Connection getConnection() {
+        if (dbConnection != null) {
+            return dbConnection.getConn();
+        }
+        return null;
+    }
+
+    /**
+     * Dohvata naziv baze sa kojom je konekcija uspostavljena.
+     * @return naziv baze podataka
+     */
+    public String getDbName() {
+        return dbConnection.getDbName();
+    }
+}

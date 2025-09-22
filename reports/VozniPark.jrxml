@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 9.0.0.final using JasperReports Library version 6.21.0-4f56c4f36cd19e17675219a9ac4692d5f0f13b06  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="VozniPark" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="50dae21f-38da-4214-994a-b9bbae57ce68">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT
+	Identifikator,
+	[Identifikator tipa vozila],
+	[Identifikator vrste vozila],
+	Marka,
+	Model,
+	[Registarska oznaka],
+	[Godina proizvodnje],
+	[Broj sjedišta],
+	[Status ispravnosti],
+	[Slika vozila],
+	[Broj šasije],
+	Kilometraža,
+	[Radni sati],
+	[Tip mjenjaca]
+FROM Vozilo]]>
+	</queryString>
+	<field name="Identifikator" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="Identifikator"/>
+		<property name="com.jaspersoft.studio.field.label" value="Identifikator"/>
+	</field>
+	<field name="Identifikator tipa vozila" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Identifikator tipa vozila"/>
+		<property name="com.jaspersoft.studio.field.label" value="Identifikator tipa vozila"/>
+	</field>
+	<field name="Identifikator vrste vozila" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="Identifikator vrste vozila"/>
+		<property name="com.jaspersoft.studio.field.label" value="Identifikator vrste vozila"/>
+	</field>
+	<field name="Marka" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Marka"/>
+		<property name="com.jaspersoft.studio.field.label" value="Marka"/>
+	</field>
+	<field name="Model" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Model"/>
+		<property name="com.jaspersoft.studio.field.label" value="Model"/>
+	</field>
+	<field name="Registarska oznaka" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Registarska oznaka"/>
+		<property name="com.jaspersoft.studio.field.label" value="Registarska oznaka"/>
+	</field>
+	<field name="Godina proizvodnje" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="Godina proizvodnje"/>
+		<property name="com.jaspersoft.studio.field.label" value="Godina proizvodnje"/>
+	</field>
+	<field name="Broj sjedišta" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="Broj sjedišta"/>
+		<property name="com.jaspersoft.studio.field.label" value="Broj sjedišta"/>
+	</field>
+	<field name="Status ispravnosti" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.name" value="Status ispravnosti"/>
+		<property name="com.jaspersoft.studio.field.label" value="Status ispravnosti"/>
+	</field>
+	<field name="Slika vozila" class="byte[]">
+		<property name="com.jaspersoft.studio.field.name" value="Slika vozila"/>
+		<property name="com.jaspersoft.studio.field.label" value="Slika vozila"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="Vozilo"/>
+	</field>
+	<field name="Broj šasije" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Broj šasije"/>
+		<property name="com.jaspersoft.studio.field.label" value="Broj šasije"/>
+	</field>
+	<field name="Kilometraža" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="Kilometraža"/>
+		<property name="com.jaspersoft.studio.field.label" value="Kilometraža"/>
+	</field>
+	<field name="Radni sati" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="Radni sati"/>
+		<property name="com.jaspersoft.studio.field.label" value="Radni sati"/>
+	</field>
+	<field name="Tip mjenjaca" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Tip mjenjaca"/>
+		<property name="com.jaspersoft.studio.field.label" value="Tip mjenjaca"/>
+	</field>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="72">
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="-20" width="842" height="92" backcolor="#006699" uuid="92834b20-188e-4f18-bca9-a0f66d4ad552"/>
+				<staticText>
+					<reportElement x="20" y="20" width="234" height="43" forecolor="#FFFFFF" uuid="43052789-78d9-4d21-9bb4-c42721320eb5"/>
+					<textElement>
+						<font size="34" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Vozni park]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="670" y="60" width="150" height="20" forecolor="#FFFFFF" uuid="3df245e1-f64f-4eda-bfb7-1d723a69b63b"/>
+					<textElement textAlignment="Right">
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Statički izvještaj]]></text>
+				</staticText>
+				<image>
+					<reportElement x="325" y="0" width="270" height="92" uuid="404184d6-66c0-4f5b-aab9-cd0e66bd3b2a"/>
+					<imageExpression><![CDATA["reports/TransPlanlogo.png"]]></imageExpression>
+				</image>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="13"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="72">
+			<line>
+				<reportElement x="-20" y="71" width="820" height="1" forecolor="#666666" uuid="17c079a5-e193-44e8-91c3-3dc84b088c1f"/>
+			</line>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="39" height="71" forecolor="#006699" backcolor="#E6E6E6" uuid="3140b63c-bb31-4c77-8f44-a247015af97a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1709f796-bf4e-457e-9211-d8ae21b7e067"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Identifikator]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="39" y="0" width="39" height="71" forecolor="#006699" backcolor="#E6E6E6" uuid="1015a2da-7b1b-454f-b34f-79584ed74d80">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8fe54f35-410e-4b1f-96c4-35f10da21586"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Identifikator tipa vozila]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="78" y="0" width="39" height="71" forecolor="#006699" backcolor="#E6E6E6" uuid="6c524919-236f-4174-9dbf-da22b4553af6">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="37e2ef08-1ea2-4743-8db7-778d9a9d02ec"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Identifikator vrste vozila]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="117" y="0" width="39" height="71" forecolor="#006699" backcolor="#E6E6E6" uuid="1ed4294f-e5e4-4e68-a30b-dfaac895a23c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4d32f9a7-fa5a-4505-a28e-30d75b010a6d"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Marka]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="156" y="0" width="39" height="71" forecolor="#006699" backcolor="#E6E6E6" uuid="97c3b3cc-fd70-4af3-b7ae-a6dc9b1b91be">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="dd1c68f4-7470-41c6-a311-ffc48898aa0e"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Model]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="195" y="0" width="55" height="71" forecolor="#006699" backcolor="#E6E6E6" uuid="3dea0e7b-fbcb-41b9-ab3e-c18946923406">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="82273508-3ac4-4347-a90e-b3bcdc34a062"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Registarska oznaka]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="250" y="0" width="55" height="71" forecolor="#006699" backcolor="#E6E6E6" uuid="63f8b31d-c85f-4738-9ddc-26c9de0eea62">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="47bde4c0-8de3-4782-948c-6d414710b6e4"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Godina proizvodnje]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="305" y="0" width="45" height="71" forecolor="#006699" backcolor="#E6E6E6" uuid="00ae3c2a-d389-4787-a657-322729956a96">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b11fe703-9b0d-4120-9aeb-27814d4d8191"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Broj sjedišta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="350" y="0" width="50" height="71" forecolor="#006699" backcolor="#E6E6E6" uuid="2c8ce72a-c259-4437-b9d9-31b4df07ddf7">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ed6312e1-e46a-488a-a7d8-516b3328a676"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Status ispravnosti]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="400" y="0" width="60" height="71" forecolor="#006699" backcolor="#E6E6E6" uuid="80ce4a9c-6888-4f62-b5ba-3f55fd5717c1">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="990cceaa-e486-4038-a7e5-91977ab7abdd"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Slika vozila]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="460" y="0" width="84" height="71" forecolor="#006699" backcolor="#E6E6E6" uuid="5823ca89-b5c6-4855-95c1-023b7c195f14">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="99d98b08-7216-464f-b910-05e7a3b2cfa7"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Broj šasije]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="545" y="0" width="95" height="71" forecolor="#006699" backcolor="#E6E6E6" uuid="f481d0f4-f6c7-4443-9529-cb924b97e4a7">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="9caa7699-7b48-4753-8277-bb233f08766c"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Kilometraža]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="640" y="0" width="70" height="71" forecolor="#006699" backcolor="#E6E6E6" uuid="4af8e500-e0e7-4e74-a51e-4e51d899cee3">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6cce1fbe-bc91-46b6-9d11-96565f5fb91d"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Radni sati]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="710" y="0" width="90" height="71" forecolor="#006699" backcolor="#E6E6E6" uuid="91e79dcc-9183-4a5f-8029-f1a593f8d5c9">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="470293f6-68ef-475b-8618-548567a5a9a3"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tip mjenjaca]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="20" width="800" height="1" uuid="81c28cb4-d29c-4661-b01b-41834858aa4c"/>
+			</line>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="0" y="0" width="39" height="20" uuid="8a665ff3-9d70-4d68-896d-b88bf14155c6">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1709f796-bf4e-457e-9211-d8ae21b7e067"/>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Identifikator}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="39" y="0" width="39" height="20" uuid="6b7069da-6add-47ef-b498-eb07d0bf3c1b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8fe54f35-410e-4b1f-96c4-35f10da21586"/>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Identifikator tipa vozila}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="78" y="0" width="39" height="20" uuid="05514912-fd48-4832-bcb0-d943ef52f560">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="37e2ef08-1ea2-4743-8db7-778d9a9d02ec"/>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Identifikator vrste vozila}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="117" y="0" width="39" height="20" uuid="e8cc96bc-2c25-4a4c-8b8d-e3cde1cf9dfe">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4d32f9a7-fa5a-4505-a28e-30d75b010a6d"/>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Marka}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="156" y="0" width="39" height="20" uuid="a4331b3a-9bb2-4ce9-88dd-2e61d0eb6d19">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="dd1c68f4-7470-41c6-a311-ffc48898aa0e"/>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Model}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="195" y="0" width="55" height="20" uuid="029f49d7-54f3-491d-9f86-40df61005d52">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="82273508-3ac4-4347-a90e-b3bcdc34a062"/>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Registarska oznaka}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="250" y="0" width="55" height="20" uuid="56638949-89d6-4950-b55b-44635dfdcab8">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="47bde4c0-8de3-4782-948c-6d414710b6e4"/>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Godina proizvodnje}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="305" y="0" width="45" height="20" uuid="e69a3758-6cec-403c-9ca0-271b3dc9f6da">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b11fe703-9b0d-4120-9aeb-27814d4d8191"/>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Broj sjedišta}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="350" y="0" width="50" height="20" uuid="a49a7c04-7bbf-4bdd-9746-638722d3c710">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ed6312e1-e46a-488a-a7d8-516b3328a676"/>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Status ispravnosti}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="400" y="0" width="60" height="20" uuid="1e7e7a5d-22fb-4927-b251-ea75a2ec4ff7">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="990cceaa-e486-4038-a7e5-91977ab7abdd"/>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Slika vozila}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="460" y="0" width="84" height="20" uuid="70285080-2be3-4943-a149-4015d210a2bc">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="99d98b08-7216-464f-b910-05e7a3b2cfa7"/>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Broj šasije}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="545" y="0" width="95" height="20" uuid="2ea407f9-620a-4ba6-8970-d221a5e97501">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="9caa7699-7b48-4753-8277-bb233f08766c"/>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Kilometraža}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="640" y="0" width="70" height="20" uuid="75162126-968e-4b7c-b15d-48b793a8359c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6cce1fbe-bc91-46b6-9d11-96565f5fb91d"/>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Radni sati}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="710" y="0" width="90" height="20" uuid="e5902e47-168a-451a-b7e8-b0012962adc9">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="470293f6-68ef-475b-8618-548567a5a9a3"/>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Tip mjenjaca}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17">
+			<textField>
+				<reportElement mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6" uuid="92b63292-c8d0-49ef-a9ef-cfc1d1ccd5b3"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="515" y="4" width="285" height="13" backcolor="#E6E6E6" uuid="a878f095-0116-4cd6-bea4-2e22a6c976cb"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern=" dd.MM.yyyy HH:mm">
+				<reportElement x="0" y="4" width="100" height="13" uuid="81659b13-6359-4d77-b9c7-2a86e6757fde"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>

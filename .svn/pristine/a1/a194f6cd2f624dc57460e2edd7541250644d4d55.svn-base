@@ -1,0 +1,75 @@
+/***********************************************************************
+ * Module:  SelectionState.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class SelectionState
+ ***********************************************************************/
+
+package model.states;
+
+import java.util.*;
+
+import javax.swing.event.ListSelectionEvent;
+
+/** @pdOid c8075792-5f48-49e6-9923-88c1ca8e1365 */
+public class SelectionState implements IAppState {
+
+	@Override
+	public void handleSelectionChanged(ListSelectionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleCreate() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleChange() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleDelete() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleCancel() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleSubmit() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleNext() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleFirst() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handlePrev() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleLast() {
+		// TODO Auto-generated method stub
+		
+	}
+}

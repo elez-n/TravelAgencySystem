@@ -1,0 +1,66 @@
+/***********************************************************************
+ * Module:  DbManipulation.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class DbManipulation
+ ***********************************************************************/
+
+package model;
+
+import java.util.*;
+
+/** @pdOid 292b6ef7-05ce-4f82-b5fe-2369b848c79c */
+public class DbManipulation {
+   /** @pdRoleInfo migr=no name=DbConnection assc=association8 coll=java.util.Collection impl=java.util.HashSet mult=0..* */
+   public java.util.Collection<DbConnection> dbConnection;
+   
+   
+   /** @pdGenerated default getter */
+   public java.util.Collection<DbConnection> getDbConnection() {
+      if (dbConnection == null)
+         dbConnection = new java.util.HashSet<DbConnection>();
+      return dbConnection;
+   }
+   
+   /** @pdGenerated default iterator getter */
+   public java.util.Iterator getIteratorDbConnection() {
+      if (dbConnection == null)
+         dbConnection = new java.util.HashSet<DbConnection>();
+      return dbConnection.iterator();
+   }
+   
+   /** @pdGenerated default setter
+     * @param newDbConnection */
+   public void setDbConnection(java.util.Collection<DbConnection> newDbConnection) {
+      removeAllDbConnection();
+      for (java.util.Iterator iter = newDbConnection.iterator(); iter.hasNext();)
+         addDbConnection((DbConnection)iter.next());
+   }
+   
+   /** @pdGenerated default add
+     * @param newDbConnection */
+   public void addDbConnection(DbConnection newDbConnection) {
+      if (newDbConnection == null)
+         return;
+      if (this.dbConnection == null)
+         this.dbConnection = new java.util.HashSet<DbConnection>();
+      if (!this.dbConnection.contains(newDbConnection))
+         this.dbConnection.add(newDbConnection);
+   }
+   
+   /** @pdGenerated default remove
+     * @param oldDbConnection */
+   public void removeDbConnection(DbConnection oldDbConnection) {
+      if (oldDbConnection == null)
+         return;
+      if (this.dbConnection != null)
+         if (this.dbConnection.contains(oldDbConnection))
+            this.dbConnection.remove(oldDbConnection);
+   }
+   
+   /** @pdGenerated default removeAll */
+   public void removeAllDbConnection() {
+      if (dbConnection != null)
+         dbConnection.clear();
+   }
+
+}

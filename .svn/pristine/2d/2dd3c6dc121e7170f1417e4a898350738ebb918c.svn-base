@@ -1,0 +1,442 @@
+package report;
+import java.awt.Color;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.imageio.ImageIO;
+import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
+import ar.com.fdvs.dj.core.DynamicJasperHelper;
+import ar.com.fdvs.dj.core.layout.ClassicLayoutManager;
+import ar.com.fdvs.dj.domain.AutoText;
+import ar.com.fdvs.dj.domain.DynamicReport;
+import ar.com.fdvs.dj.domain.ImageBanner;
+import ar.com.fdvs.dj.domain.Style;
+import ar.com.fdvs.dj.domain.builders.DynamicReportBuilder;
+import ar.com.fdvs.dj.domain.builders.FastReportBuilder;
+import ar.com.fdvs.dj.domain.builders.StyleBuilder;
+import ar.com.fdvs.dj.domain.constants.Font;
+import ar.com.fdvs.dj.domain.constants.HorizontalAlign;
+import ar.com.fdvs.dj.domain.constants.Page;
+import model.TreeElement.Column;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRField;
+import net.sf.jasperreports.engine.JRResultSetDataSource;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+import net.sf.jasperreports.engine.design.*;
+import net.sf.jasperreports.engine.type.HorizontalAlignEnum;
+import net.sf.jasperreports.engine.type.HorizontalTextAlignEnum;
+import net.sf.jasperreports.engine.type.ScaleImageEnum;
+import net.sf.jasperreports.view.JasperViewer;
+import view.MainView;
+import model.GeneralTableModel;
+
+
+
+public class ReportGenerator {
+	/*public JasperReport createDynamicReport(List<Column> columns, List<Integer> selectedIndices, String tableName, Image logoImage) throws JRException {
+		JasperDesign jasperDesign = new JasperDesign();
+	    jasperDesign.setName("DynamicReport");
+	    jasperDesign.setPageWidth(595);
+	    jasperDesign.setPageHeight(842);
+	    jasperDesign.setColumnWidth(555);
+	    jasperDesign.setLeftMargin(20);
+	    jasperDesign.setRightMargin(20);
+	    jasperDesign.setTopMargin(20);
+	    jasperDesign.setBottomMargin(20);
+
+	    // Parametar za logo
+	    JRDesignParameter logoParam = new JRDesignParameter();
+	    logoParam.setName("logo");
+	    logoParam.setValueClass(Image.class);
+	    jasperDesign.addParameter(logoParam);
+
+	    // Polja (field-ovi)
+	    for (int i = 0; i < selectedIndices.size(); i++) {
+	        JRDesignField field = new JRDesignField();
+	        field.setName(columns.get(selectedIndices.get(i)).getName());
+	        field.setValueClass(Object.class);
+	        jasperDesign.addField(field);
+	    }
+
+	    // ===== Title Band =====
+	    JRDesignBand titleBand = new JRDesignBand();
+	    titleBand.setHeight(60);
+
+	    // ➤ Naslov – ime tabele
+	    JRDesignStaticText titleText = new JRDesignStaticText();
+	    titleText.setX(0);
+	    titleText.setY(0);
+	    titleText.setWidth(400);
+	    titleText.setHeight(30);
+	    titleText.setText("Dinamički Izveštaj: " + tableName);
+	    titleText.setFontSize(16f);
+	    titleText.setBold(true);
+	    titleBand.addElement(titleText);
+
+	    // ➤ Datum i vrijeme
+	    JRDesignTextField dateTimeField = new JRDesignTextField();
+	    dateTimeField.setX(0);
+	    dateTimeField.setY(35);
+	    dateTimeField.setWidth(300);
+	    dateTimeField.setHeight(20);
+	    JRDesignExpression dateTimeExpr = new JRDesignExpression();
+	    //dateTimeExpr.setValueClass(java.util.Date.class);
+	    dateTimeExpr.setText("new java.util.Date()");
+	    dateTimeField.setExpression(dateTimeExpr);
+	    titleBand.addElement(dateTimeField);
+
+	    // ➤ Logo
+	    JRDesignImage logo = new JRDesignImage(jasperDesign);
+	    logo.setX(455);
+	    logo.setY(0);
+	    logo.setWidth(100);
+	    logo.setHeight(40);
+	    logo.setScaleImage(ScaleImageEnum.CLIP);
+	    JRDesignExpression logoExpr = new JRDesignExpression();
+	    logoExpr.setText("$P{logo}");
+	    logoExpr.setValueClass(Image.class);
+	    logo.setExpression(logoExpr);
+	    titleBand.addElement(logo);
+
+	    jasperDesign.setTitle(titleBand);
+
+	    // ===== Column Header Band =====
+	    JRDesignBand columnHeader = new JRDesignBand();
+	    columnHeader.setHeight(20);
+	    int x = 0;
+	    int colWidth = 555 / selectedIndices.size();
+
+	    for (int i = 0; i < selectedIndices.size(); i++) {
+	        JRDesignStaticText columnHeaderText = new JRDesignStaticText();
+	        columnHeaderText.setX(x);
+	        columnHeaderText.setY(0);
+	        columnHeaderText.setWidth(colWidth);
+	        columnHeaderText.setHeight(20);
+	        columnHeaderText.setText(columns.get(selectedIndices.get(i)).getName());
+	        columnHeaderText.setBold(true);
+	        columnHeader.addElement(columnHeaderText);
+	        x += colWidth;
+	    }
+
+	    jasperDesign.setColumnHeader(columnHeader);
+
+	    // ===== Detail Band =====
+	    JRDesignBand detailBand = new JRDesignBand();
+	    detailBand.setHeight(20);
+	    x = 0;
+
+	    for (int i = 0; i < selectedIndices.size(); i++) {
+	        JRDesignTextField textField = new JRDesignTextField();
+	        textField.setX(x);
+	        textField.setY(0);
+	        textField.setWidth(colWidth);
+	        textField.setHeight(20);
+	        JRDesignExpression expression = new JRDesignExpression();
+	        expression.setText("$F{" + columns.get(selectedIndices.get(i)).getName() + "}");
+	        textField.setExpression(expression);
+	        detailBand.addElement(textField);
+	        x += colWidth;
+	    }
+
+	    ((JRDesignSection) jasperDesign.getDetailSection()).addBand(detailBand);
+
+	    // ===== Page Footer (broj stranice) =====
+	    JRDesignBand footer = new JRDesignBand();
+	    footer.setHeight(20);
+	    JRDesignTextField pageNumberField = new JRDesignTextField();
+	    pageNumberField.setX(460);
+	    pageNumberField.setY(0);
+	    pageNumberField.setWidth(100);
+	    pageNumberField.setHeight(20);
+	    //pageNumberField.setHorizontalAlignment(HorizontalAlignEnum.RIGHT);
+	    pageNumberField.setExpression(new JRDesignExpression("\"Strana: \" + $V{PAGE_NUMBER}"));
+	    footer.addElement(pageNumberField);
+	    jasperDesign.setPageFooter(footer);
+
+	    return JasperCompileManager.compileReport(jasperDesign);
+	}*/
+	
+	 /*private JRDataSource createDataSource(List<List<Object>> data, List<Integer> selectedIndices) {
+	        return new JRDataSource() {
+	            private int index = -1;
+
+	            @Override
+	            public boolean next() throws JRException {
+	                index++;
+	                return index < data.size();
+	            }
+
+	            @Override
+	            public Object getFieldValue(JRField jrField) throws JRException {
+	                String fieldName = jrField.getName();
+
+	                List<Object> row = data.get(index);
+
+	                // Pronađi kolonu sa imenom polja
+	                for (Integer colIdx : selectedIndices) {
+	                    if (fieldName.equals(row.get(colIdx).toString()) || fieldName.equals(getColumnName(colIdx))) {
+	                        return row.get(colIdx);
+	                    }
+	                }
+
+	                // Alternativa: jednostavno vratiti vrednost na osnovu indeksa
+	                // Pošto imamo imena polja i indekse kolona, možemo ih povezati
+	                try {
+	                    int idx = -1;
+	                    for (int i = 0; i < selectedIndices.size(); i++) {
+	                        int cIdx = selectedIndices.get(i);
+	                        if (fieldName.equals(getColumnName(cIdx))) {
+	                            idx = i;
+	                            break;
+	                        }
+	                    }
+	                    if (idx != -1) {
+	                        return row.get(selectedIndices.get(idx));
+	                    }
+	                } catch (Exception e) {
+	                    // Ignoriši greške
+	                }
+	                return null;
+	            }
+
+	            private String getColumnName(int idx) {
+	                // Ova metoda može biti parametar ako treba
+	                return ""; // implementiraj ako treba
+	            }
+	        };
+	    }*/
+	
+	public List<Integer> showColumnSelectionDialog(List<Column> columns) {
+		    JPanel panel = new JPanel(new GridLayout(0, 1));
+		    JCheckBox[] checkBoxes = new JCheckBox[columns.size()];
+
+		    for (int i = 0; i < columns.size(); i++) {
+		        checkBoxes[i] = new JCheckBox(columns.get(i).getName(), true);
+		        panel.add(checkBoxes[i]);
+		    }
+
+		    int result = JOptionPane.showConfirmDialog(null, panel, "Izaberite kolone za izveštaj",
+		            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+		    if (result == JOptionPane.OK_OPTION) {
+		        List<Integer> selected = new ArrayList<>();
+		        for (int i = 0; i < checkBoxes.length; i++) {
+		            if (checkBoxes[i].isSelected()) {
+		                selected.add(i);
+		            }
+		        }
+		        return selected;
+		    } else {
+		        return null;
+		    }
+		}
+	 
+	/*public void generateReport(MainView appView)
+	{
+		 	GeneralTableModel tableModel = appView.getTablePanel().getTableModel();
+		 	
+		 	Image logoImage = null;
+		 	try {
+		 	    InputStream is = getClass().getResourceAsStream("/logo.png"); // Napomena: počinje sa "/"
+		 	    if (is == null) {
+		 	        JOptionPane.showMessageDialog(null, "Nije pronađen logo u resources folderu.");
+		 	        return;
+		 	    }
+		 	    logoImage = ImageIO.read(is);
+		 	} catch (IOException e) {
+		 	    JOptionPane.showMessageDialog(null, "Greška prilikom učitavanja slike: " + e.getMessage());
+		 	    return;
+		 	}
+
+	        List<Column> columns = tableModel.getColumns();
+
+	        List<Integer> selectedIndices = showColumnSelectionDialog(columns);
+	        if (selectedIndices == null || selectedIndices.isEmpty()) {
+	            JOptionPane.showMessageDialog(null, "Nije izabrana nijedna kolona.");
+	            return;
+	        }
+
+	        try {
+	        	String tableName = appView.getCurrentTable().getName();
+	        	JasperReport jasperReport = createDynamicReport(columns, selectedIndices, tableName, logoImage);
+
+	            // Kreiraj data source samo sa izabranim kolonama
+	            JRDataSource dataSource = new JRDataSource() {
+	                private int index = -1;
+
+	                @Override
+	                public boolean next() {
+	                    index++;
+	                    return index < tableModel.data.size();
+	                }
+
+	                @Override
+	                public Object getFieldValue(JRField jrField) {
+	                    String fieldName = jrField.getName(); // npr. "Ime"
+	                    List<Object> row = tableModel.data.get(index);
+
+	                    // Tražimo kolonu sa imenom koje se poklapa
+	                    for (int i = 0; i < selectedIndices.size(); i++) {
+	                        int colIdx = selectedIndices.get(i);
+	                        if (columns.get(colIdx).getName().equals(fieldName)) {
+	                            return row.get(colIdx); // ✔️ Vraćamo podatak iz odgovarajuće kolone
+	                        }
+	                    }
+
+	                    return null;
+	                }
+	            };
+	            
+	            Map<String, Object> params = new HashMap<>();
+	            params.put("tableName", tableName);
+	            params.put("logo", logoImage);
+
+	            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource);
+
+	            Object[] options = {"Print Preview", "Sačuvaj kao PDF", "Otkaži"};
+	            int choice = JOptionPane.showOptionDialog(null,
+	                    "Izaberite opciju za izveštaj",
+	                    "Opcije izveštaja",
+	                    JOptionPane.YES_NO_CANCEL_OPTION,
+	                    JOptionPane.QUESTION_MESSAGE,
+	                    null,
+	                    options,
+	                    options[0]);
+
+	            if (choice == JOptionPane.YES_OPTION) {
+	                JasperViewer.viewReport(jasperPrint, false);
+	            } else if (choice == JOptionPane.NO_OPTION) {
+	                JFileChooser fileChooser = new JFileChooser();
+	                fileChooser.setSelectedFile(new File("izvestaj.pdf"));
+	                int fcResult = fileChooser.showSaveDialog(null);
+	                if (fcResult == JFileChooser.APPROVE_OPTION) {
+	                    File file = fileChooser.getSelectedFile();
+	                    JasperExportManager.exportReportToPdfFile(jasperPrint, file.getAbsolutePath());
+	                    JOptionPane.showMessageDialog(null, "Izveštaj sačuvan: " + file.getAbsolutePath());
+	                }
+	            }
+
+	        } catch (JRException ex) {
+	            ex.printStackTrace();
+	            JOptionPane.showMessageDialog(null, "Greška prilikom generisanja izveštaja: " + ex.getMessage());
+	        }
+	}*/
+	
+	public void generateReportFinal(MainView appView)
+	{
+		GeneralTableModel tableModel = appView.getTablePanel().getTableModel();
+	    List<Column> allColumns = tableModel.getColumns();
+	    String tableName = appView.getCurrentTable().getName();
+	    
+	    List<Integer> selectedIndices = showColumnSelectionDialog(allColumns);
+	    if (selectedIndices == null || selectedIndices.isEmpty()) {
+	        JOptionPane.showMessageDialog(null, "Niste izabrali nijednu kolonu.");
+	        return;
+	    }
+
+	    JRDataSource dataSource = new JRDataSource() {
+	        private int index = -1;
+
+	        @Override
+	        public boolean next() {
+	            index++;
+	            return index < tableModel.getRowCount();
+	        }
+
+	        @Override
+	        public Object getFieldValue(JRField jrField) {
+	            String fieldName = jrField.getName();
+	            for (int idx : selectedIndices) {
+	                String colName = allColumns.get(idx).getName();
+	                if (colName.equals(fieldName)) {
+	                    Object value = tableModel.getValueAt(index, idx);
+	                    return value;
+	                }
+	            }
+	            return null;
+	        }
+	    };
+
+	    FastReportBuilder drb = new FastReportBuilder();
+	    Style columnStyle = new StyleBuilder(false)
+				.setHorizontalAlign(HorizontalAlign.LEFT)
+				.build();
+		for (int idx : selectedIndices) {
+		    String colName = allColumns.get(idx).getName();
+		    Object firstValue = tableModel.getValueAt(0, idx);
+		    Class<?> clazz = firstValue != null ? firstValue.getClass() : String.class;
+		    drb.addColumn(colName, colName, clazz.getName(), 50, columnStyle, columnStyle);
+		}
+		Font titleFont = Font.TIMES_NEW_ROMAN_BIG_BOLD;
+		Style titleStyle = new StyleBuilder(false)
+			    .setFont(titleFont)
+			    .setHorizontalAlign(ar.com.fdvs.dj.domain.constants.HorizontalAlign.LEFT)
+			    .build();
+		
+	    DynamicReport dr = drb
+	        .setTitle(tableName)
+	        .setTitleStyle(titleStyle)
+	        .setUseFullPageWidth(true)
+	        .setPrintBackgroundOnOddRows(true)
+	        .setPageSizeAndOrientation(Page.Page_Legal_Landscape())
+	        .addFirstPageImageBanner("resources/logo.png", 100, 60, ImageBanner.Alignment.Right)
+	        .setHeaderVariablesHeight(50)
+	        .addAutoText(
+	            "Datum i vrijeme: " + new java.text.SimpleDateFormat("dd.MM.yyyy. HH:mm").format(new Date()),
+	            AutoText.POSITION_HEADER,
+	            AutoText.ALIGNMENT_LEFT,
+	            200,
+	            new StyleBuilder(true).build()
+	        )
+	        .addAutoText(
+	            AutoText.AUTOTEXT_PAGE_X_SLASH_Y,
+	            AutoText.POSITION_FOOTER,
+	            AutoText.ALIGNMENT_RIGHT,
+	            30,
+	            20
+	        )
+	        .build();
+	    
+	    try {
+	        JasperPrint jasperPrint = DynamicJasperHelper.generateJasperPrint(dr, new ClassicLayoutManager(), dataSource);
+
+	        Object[] options = {"Pregled", "Sačuvaj PDF", "Otkaži"};
+	        int choice = JOptionPane.showOptionDialog(null, "Šta želite uraditi sa izvještajem?", "Opcije",
+	            JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+
+	        if (choice == 0) {
+	            JasperViewer.viewReport(jasperPrint, false);
+	        } else if (choice == 1) {
+	            JFileChooser fc = new JFileChooser();
+	            fc.setSelectedFile(new File("izvjestaj.pdf"));
+	            if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+	                JasperExportManager.exportReportToPdfFile(jasperPrint, fc.getSelectedFile().getAbsolutePath());
+	                JOptionPane.showMessageDialog(null, "PDF sačuvan.");
+	            }
+	        }
+	    } catch (JRException ex) {
+	        ex.printStackTrace();
+	        JOptionPane.showMessageDialog(null, "Greška pri generisanju izvještaja: " + ex.getMessage());
+	    }
+	}
+}

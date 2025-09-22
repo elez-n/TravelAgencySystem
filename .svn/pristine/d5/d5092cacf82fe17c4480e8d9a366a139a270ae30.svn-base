@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  Table.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class Table
+ ***********************************************************************/
+
+package view;
+
+import java.util.*;
+
+/** @pdOid ed153840-c516-4fd1-b387-0c53fa9d9322 */
+public class Table {
+}

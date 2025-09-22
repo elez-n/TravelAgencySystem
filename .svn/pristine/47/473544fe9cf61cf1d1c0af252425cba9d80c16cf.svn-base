@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  SelectionState.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class SelectionState
+ ***********************************************************************/
+
+package model;
+
+import java.util.*;
+
+/** @pdOid c8075792-5f48-49e6-9923-88c1ca8e1365 */
+public class SelectionState implements IAppState {
+}

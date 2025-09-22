@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  XMLParser.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class XMLParser
+ ***********************************************************************/
+
+package model;
+
+import java.util.*;
+
+/** @pdOid 1e90ca91-6205-45fa-ab27-e47baf981875 */
+public class XMLParser extends ParserStrategy {
+}

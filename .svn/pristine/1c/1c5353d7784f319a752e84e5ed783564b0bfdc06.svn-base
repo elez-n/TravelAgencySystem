@@ -1,0 +1,196 @@
+package model.states;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+
+import model.CustomTableModel;
+import model.GeneralTableModel;
+import model.TreeElement;
+import model.TreeElement.Column;
+import view.MainView;
+
+/**
+ * Klasa koja implementira stanje aplikacije pri izmjeni selektovanog reda
+ * tabele.
+ * 
+ * @author grupa4
+ */
+public class EditState extends AbstractAppState {
+
+	public EditState(MainView window) {
+		super(window);
+
+		statusbar.setState("Modifying");
+
+		this.menubar.acceptItem.setEnabled(true);
+		this.menubar.cancelItem.setEnabled(true);
+		this.menubar.deleteItem.setEnabled(false);
+		this.menubar.firstItem.setEnabled(false);
+		this.menubar.lastItem.setEnabled(false);
+		this.menubar.previousItem.setEnabled(false);
+		this.menubar.nextItem.setEnabled(false);
+		this.menubar.reportItem.setEnabled(false);
+		this.menubar.editItem.setEnabled(false);
+		this.menubar.newItem.setEnabled(false);
+
+		toolbar.setButtonsInModifyState();
+	}
+
+	@Override
+	public void handleNext() {
+
+	}
+
+	@Override
+	public void handleFirst() {
+	}
+
+	@Override
+	public void handlePrev() {
+	}
+
+	@Override
+	public void handleLast() {
+	}
+
+	@Override
+	protected void handleSpecificSelection() {
+		/*handleChange();
+		form.disableInputs();
+		form.revalidate();
+*/
+	}
+
+	@Override
+	public void handleCreate() {
+	/*	form.clearAll();
+		form.enableInputs();
+		table.getSelectionModel().clearSelection();
+		form.setVisible(true);
+
+		window.setAppState(new CreationState(window));*/
+	}
+
+	@Override
+	protected void handleSpecificSubmit() {
+	    boolean success = false;
+	    CustomTableModel tblModel = (CustomTableModel) window.getTablePanel().getTable().getModel();
+	    success = tblModel.editRow(window.getTablePanel().getFormPanel().getValues());
+	    int row = window.getTablePanel().getTable().getSelectedRow();
+	    if (success) {
+	        JOptionPane.showMessageDialog(null, "Uspješna izmjena reda.");
+
+	        tblModel.getAllData();
+	        tblModel.fireTableDataChanged();
+	        window.getTablePanel().getTable().setRowSelectionInterval(row, row);
+	        window.getTablePanel().getTable().revalidate();
+	    } else {
+	        JOptionPane.showMessageDialog(null, "Greška prilikom izmjene reda.");
+	    }
+	}
+
+
+	@Override
+	public void handleChange() {
+		int row = window.getTablePanel().getTable().getSelectedRow();
+		int cols = window.getTablePanel().getTable().getColumnCount();
+		System.out.println(row + " i " + cols);
+
+		if (row >= 0) {
+			List<Object> rowData = new ArrayList<>();
+			for (int i = 0; i < cols; i++) {
+				rowData.add(window.getTablePanel().getTable().getValueAt(row, i));
+				System.out.println(rowData);
+			}
+			window.getTablePanel().getFormPanel().clearAll();
+			window.getTablePanel().getFormPanel().fillInputs(rowData);
+			window.getTablePanel().getFormPanel().enableInputs();
+			window.getTablePanel().getFormPanel().disablePrimaryInputs();
+			window.getTablePanel().getFormPanel().setVisible(true);
+			System.out.println("rowData size = " + rowData.size());
+			System.out.println("form inputs size = " + window.getTablePanel().getFormPanel().getInputFields().size());
+		}
+	}
+
+	@Override
+	public void handleDelete() {
+		
+		    int selectedRow = window.getTablePanel().getTable().getSelectedRow();
+		    if (selectedRow < 0) {
+		        JOptionPane.showMessageDialog(window, "Nijedan red nije selektovan.");
+		        return;
+		    }
+
+		    GeneralTableModel tblModel = (GeneralTableModel) window.getTablePanel().getTable().getModel();
+		    List<Object> primaryKeys = new ArrayList<>();
+
+		    // skupimo sve primarne ključeve
+		    for (int i = 0; i < tblModel.getColumnCount(); i++) {
+		        Column col = tblModel.getColumn(i);
+		        if (col.isPrimary()) {
+		            Object keyValue = window.getTablePanel().getTable().getValueAt(selectedRow, i);
+		            primaryKeys.add(keyValue);
+		        }
+		    }
+
+		    if (primaryKeys.isEmpty()) {
+		        JOptionPane.showMessageDialog(window, "Primarni ključ nije pronađen, brisanje nije moguće.");
+		        return;
+		    }
+
+		    int result = JOptionPane.showConfirmDialog(window,
+		            "Da li želite da obrišete selektovani red?",
+		            "Potvrda brisanja", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+		    if (result == JOptionPane.YES_OPTION) {
+		        boolean success;
+		        if (primaryKeys.size() == 1) {
+		            success = tblModel.deleteRowById(primaryKeys.get(0));
+		        } else {
+		            success = tblModel.deleteRowById(primaryKeys);
+		        }
+
+		        if (success) {
+		            JOptionPane.showMessageDialog(window, "Red uspješno obrisan.");
+		            window.getTablePanel().getFormPanel().clearAll();
+		            tblModel.getAllData();
+		            window.getTablePanel().getTable().revalidate();
+		            window.getTablePanel().adjustColumnWidths();
+
+		           /* CustomRowHeader rowHeader = window.getRowHeader();
+		            rowHeader.updateRowHeader(window.getTablePanel().getTable()); 
+		            rowHeader.revalidate();
+		            rowHeader.repaint();
+		            window.getTablePanel().getTable().setAutoCreateRowSorter(true);*/
+		        } else {
+		            JOptionPane.showMessageDialog(window, "Brisanje nije uspjelo.");
+		        }
+		    }
+		
+
+
+	}
+
+	@Override
+	public void handleCancel() {
+		/*form.clearAll();
+		window.getMainTable().getSelectionModel().clearSelection();
+		form.setVisible(false);
+
+		window.setAppState(new ActiveState(window, ""));*/
+	}
+
+	@Override
+	public void handleSubmit() {
+		// TODO Auto-generated method stub
+		if (!window.getTablePanel().getFormPanel().validateInputs()) {
+			JOptionPane.showMessageDialog(null, "Polja oznacena sa * su obavezna!");
+		} else {
+			handleSpecificSubmit();
+		}
+	}
+
+}

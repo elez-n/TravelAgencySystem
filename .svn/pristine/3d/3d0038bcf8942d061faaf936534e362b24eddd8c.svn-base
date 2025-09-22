@@ -1,0 +1,109 @@
+/***********************************************************************
+ * Module:  ActiveState.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class ActiveState
+ ***********************************************************************/
+
+package model.states;
+
+import java.util.*;
+
+import javax.swing.event.ListSelectionEvent;
+
+import view.MainView;
+
+/** @pdOid 907be3cd-7f35-4788-b076-7a22858d313f */
+public class ActiveState extends AbstractAppState {
+
+	public ActiveState(MainView window) {
+		super(window);
+
+		statusbar.setState("Active");
+
+		this.toolbar.setVisible(true);
+
+		this.toolbar.setButtonsInActiveState();
+		this.menubar.acceptItem.setEnabled(false);
+		this.menubar.cancelItem.setEnabled(false);
+		this.menubar.deleteItem.setEnabled(false);
+		this.menubar.firstItem.setEnabled(false);
+		this.menubar.lastItem.setEnabled(false);
+		this.menubar.previousItem.setEnabled(false);
+		this.menubar.nextItem.setEnabled(false);
+		this.menubar.reportItem.setEnabled(true);
+		this.menubar.editItem.setEnabled(false);
+		this.menubar.newItem.setEnabled(true);
+	}
+
+	@Override
+	public void handleSelectionChanged(ListSelectionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleCreate() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleChange() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleDelete() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleCancel() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleSubmit() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleNext() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleFirst() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handlePrev() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleLast() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void handleSpecificSelection() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void handleSpecificSubmit() {
+		// TODO Auto-generated method stub
+		
+	}
+}

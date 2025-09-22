@@ -1,0 +1,136 @@
+package view;
+
+import javax.swing.JMenuBar;
+import javax.swing.ImageIcon;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+
+public class Menubar extends JMenuBar {
+
+    Toolkit toolkit = Toolkit.getDefaultToolkit();
+
+    // === FILE MENU ===
+    public JMenu fileMenu;
+    public JMenuItem loadXml;
+    public JMenuItem switchXml;
+    public JMenuItem exitItem;
+
+    // === EDIT MENU ===
+    public JMenu editMenu;
+
+    // Navigacija
+    public JMenu navigationMenu;
+    public JMenuItem firstItem;
+    public JMenuItem previousItem;
+    public JMenuItem nextItem;
+    public JMenuItem lastItem;
+
+    // Stanja
+    public JMenu stateMenu;
+    public JMenuItem newItem;
+    public JMenuItem editItem;
+    public JMenuItem deleteItem;
+
+    // Potvrda
+    public JMenu confirmMenu;
+    public JMenuItem acceptItem;
+    public JMenuItem cancelItem;
+
+    // Izvještaj
+    public JMenuItem reportItem;
+
+    // === HELP MENU ===
+    public JMenu helpMenu;
+    public JMenuItem aboutItem;
+
+    public Menubar() {
+        // === FILE MENU ===
+        fileMenu = new JMenu("File");
+        fileMenu.setMnemonic(KeyEvent.VK_F);
+
+        loadXml = new JMenuItem("Load XML");
+        loadXml.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_DOWN_MASK));
+
+        switchXml = new JMenuItem("Switch XML");
+        switchXml.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
+
+        exitItem = new JMenuItem("Exit");
+        exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
+        exitItem.setIcon(new ImageIcon(toolkit.getImage("resources/exit.png")));
+        exitItem.addActionListener(e -> System.exit(0));
+
+        fileMenu.add(loadXml);
+        fileMenu.add(switchXml);
+        fileMenu.addSeparator();
+        fileMenu.add(exitItem);
+
+        // === EDIT MENU ===
+        editMenu = new JMenu("Edit");
+        editMenu.setMnemonic(KeyEvent.VK_E);
+
+        navigationMenu = new JMenu("Navigation");
+        firstItem = new JMenuItem("First");
+        previousItem = new JMenuItem("Previous");
+        nextItem = new JMenuItem("Next");
+        lastItem = new JMenuItem("Last");
+
+        firstItem.setIcon(new ImageIcon(toolkit.getImage("resources/first.png").getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
+        previousItem.setIcon(new ImageIcon(toolkit.getImage("resources/previous.png").getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
+        nextItem.setIcon(new ImageIcon(toolkit.getImage("resources/next.png").getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
+        lastItem.setIcon(new ImageIcon(toolkit.getImage("resources/last.png").getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
+
+        navigationMenu.add(firstItem);
+        navigationMenu.add(previousItem);
+        navigationMenu.add(nextItem);
+        navigationMenu.add(lastItem);
+
+        stateMenu = new JMenu("Data");
+        newItem = new JMenuItem("New");
+        newItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
+        editItem = new JMenuItem("Edit");
+        editItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK));
+        deleteItem = new JMenuItem("Delete");
+        deleteItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK));
+
+        stateMenu.add(newItem);
+        stateMenu.add(editItem);
+        stateMenu.add(deleteItem);
+
+        confirmMenu = new JMenu("Confirm");
+        acceptItem = new JMenuItem("Accept");
+        cancelItem = new JMenuItem("Cancel");
+        acceptItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
+        cancelItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
+        confirmMenu.add(acceptItem);
+        confirmMenu.add(cancelItem);
+
+        reportItem = new JMenuItem("Report");
+        reportItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK));
+        reportItem.setIcon(new ImageIcon(toolkit.getImage("resources/report.png").getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
+
+        editMenu.add(navigationMenu);
+        editMenu.addSeparator();
+        editMenu.add(stateMenu);
+        editMenu.addSeparator();
+        editMenu.add(confirmMenu);
+        editMenu.addSeparator();
+        editMenu.add(reportItem);
+
+        // === HELP MENU ===
+        helpMenu = new JMenu("Help");
+        helpMenu.setMnemonic(KeyEvent.VK_H);
+
+        aboutItem = new JMenuItem("About");
+        aboutItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+        helpMenu.add(aboutItem);
+
+        // Dodavanje svega u MenuBar
+        add(fileMenu);
+        add(editMenu);
+        add(helpMenu);
+    }
+}

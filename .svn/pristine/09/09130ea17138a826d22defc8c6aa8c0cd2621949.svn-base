@@ -1,0 +1,61 @@
+/***********************************************************************
+ * Module:  LoginController.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class LoginController
+ ***********************************************************************/
+
+package controller;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.*;
+
+import javax.swing.JOptionPane;
+
+import model.Model;
+import view.MainView;
+
+public class LoginController {
+    private LoginModel loginModel;
+    private LoginView loginView;
+	
+	public LoginController(LoginModel loginModel, LoginView loginView) {
+	       this.loginModel = loginModel;
+	       this.loginView = loginView;
+
+	       this.loginView.getLoginButton().addActionListener(new ActionListener() {
+	           @Override
+	           public void actionPerformed(ActionEvent e) {
+	               String username = loginView.getUsername();
+	               String password = loginView.getPassword();
+
+	               // poziva model za provjeru
+
+	               System.out.println("Login dugme kliknuto");
+	               if(loginModel.login(username, password))
+	               {
+	            	   
+	            	  openMainWindow();
+
+	                  System.out.println("Otvorio main prozor");
+	               }
+	               else {
+	                   JOptionPane.showMessageDialog(loginView,
+	                           "Greška! Nisu uneseni ispravni podaci.",
+	                           "Prijava neuspješna",
+	                           JOptionPane.ERROR_MESSAGE);
+	               }
+	       }
+	           
+	           private void openMainWindow() {
+	        	   Model model = new Model();
+	        	   
+	        	   MainView appView = new MainView(model);
+	        	   Controller cont = new Controller(model, appView);
+	        	   appView.setVisible(true);
+	        	   loginView.setVisible(false);
+	           }
+	       });
+	       }
+}
+

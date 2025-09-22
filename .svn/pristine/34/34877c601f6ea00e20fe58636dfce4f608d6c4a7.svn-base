@@ -1,0 +1,90 @@
+package controller;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import db.DbManipulation;
+
+
+/**
+ * Model klase za rad sa korisnickim prijavama.
+ * Klasa LoginModel omogućava autentifikaciju korisnika putem korisnickog imena i lozinke
+ * koristeći stored procedure za prijavu. Takođe pruža metode za pristup informacijama o korisniku
+ * kao što su ID korisnika, nivo pristupa i organizaciona jedinica.
+ * @author G1
+ */
+public class LoginModel {
+    private String username;
+    private String password;
+    public static String userId="-1";
+    public static int accessLevel=-1;
+    public static int oj=-1;
+ 
+    public String getUsername() {
+        return username;
+    }
+ 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+ 
+    public String getPassword() {
+        return password;
+    }
+ 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+ 
+    /**
+     * Vrši prijavu korisnika koristeći korisnicko ime i lozinku.
+     * Ova metoda koristi stored procedure za autentifikaciju korisnika i postavlja
+     * staticke varijable na osnovu rezultata iz baze podataka.
+     * 
+     * @param username Korisnicko ime.
+     * @param password Lozinka.
+     * @return 
+     */
+    public boolean login(String username, String password) {
+       	DbManipulation dbManipulations = DbManipulation.createConnection();
+       	Connection conn = DbManipulation.dbManipulations.get(0).getConnection();
+       	
+
+    		try {
+    			CallableStatement callableStatement = conn.prepareCall("{call Login(?,?)}");
+    			callableStatement.setObject(1, username);
+    			callableStatement.setObject(2, password);
+    			ResultSet resultSet = callableStatement.executeQuery();
+    			return resultSet.next();
+    	    } catch (SQLException e) {
+    	        e.printStackTrace();
+    	        return false;
+    	    }
+       }
+
+	public LoginModel() {
+		super();
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+
+	public int getAccessLevel() {
+		return accessLevel;
+	}
+
+	public static void setUserId(String userId) {
+		LoginModel.userId = userId;
+	}
+
+	public static void setAccessLevel(int accessLevel) {
+		LoginModel.accessLevel = accessLevel;
+	}
+
+
+
+}

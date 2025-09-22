@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  Controller.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class Controller
+ ***********************************************************************/
+
+package controller;
+
+import java.util.*;
+
+/** @pdOid bbfeefa8-e935-4359-8b5e-3b1a09e94d53 */
+public class Controller {
+}

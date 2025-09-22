@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  BrowserPanel.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class BrowserPanel
+ ***********************************************************************/
+
+package view;
+
+import java.util.*;
+
+/** @pdOid 41c2f0c6-f2ff-4d6a-8a1f-c59c0aab4f7b */
+public class BrowserPanel {
+}

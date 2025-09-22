@@ -1,0 +1,362 @@
+/***********************************************************************
+ * Module:  MainView.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class MainView
+ ***********************************************************************/
+
+package view;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.util.*;
+import view.Menubar;
+
+import javax.swing.BorderFactory;
+import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenuBar;
+
+import model.Model;
+
+/** @pdOid f1262d12-1a01-48a8-aabe-2237226a8b12 */
+public class MainView extends JFrame{
+   /** @pdRoleInfo migr=no name=Table assc=association1 coll=java.util.Collection impl=java.util.HashSet mult=0..* type=Aggregation */
+   public java.util.Collection<Table> table;
+   /** @pdRoleInfo migr=no name=Toolbar assc=association2 coll=java.util.Collection impl=java.util.HashSet mult=0..* type=Aggregation */
+   public java.util.Collection<Toolbar> toolbar;
+   /** @pdRoleInfo migr=no name=Menubar assc=association3 coll=java.util.Collection impl=java.util.HashSet mult=0..* type=Aggregation */
+   public java.util.Collection<Menubar> menubar;
+   /** @pdRoleInfo migr=no name=Statusbar assc=association4 coll=java.util.Collection impl=java.util.HashSet mult=0..* type=Aggregation */
+   public java.util.Collection<Statusbar> statusbar;
+   /** @pdRoleInfo migr=no name=BrowserPanel assc=association5 coll=java.util.Collection impl=java.util.HashSet mult=0..* type=Aggregation */
+   public java.util.Collection<BrowserPanel> browserPanel;
+   /** @pdRoleInfo migr=no name=FormPanel assc=association6 coll=java.util.Collection impl=java.util.HashSet mult=0..* type=Aggregation */
+   public java.util.Collection<FormPanel> formPanel;
+   
+   private JDesktopPane desktopPane;
+
+   public MainView(Model model) {
+       setTitle("TransPlan - Agencija za prevoz putnika");
+       setSize(1000, 700);
+       setLocationRelativeTo(null); // Centriraj prozor
+       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+       // Postavi meni bar
+       Menubar menubar = new Menubar();
+       setJMenuBar(menubar);
+       
+       
+    // Kreiraj i dodaj ToolBar na vrh (NORTH)
+       Toolbar toolBar = new Toolbar();
+       getContentPane().add(toolBar, BorderLayout.NORTH);
+
+       // Glavni radni prostor
+       desktopPane = new JDesktopPane();
+       getContentPane().add(desktopPane, BorderLayout.CENTER);
+       
+       // Browser panel sa lijeve strane
+       BrowserPanel browserPanel = new BrowserPanel(model); // ovdje će biti tvoj JTree iz XML-a
+       browserPanel.setPreferredSize(new Dimension(250, 0)); // širina panela
+       getContentPane().add(browserPanel, BorderLayout.WEST);
+
+       // Status bar (privremeni)
+       JLabel statusBar = new JLabel(" Dobrodošli u aplikaciju.");
+       statusBar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+       add(statusBar, BorderLayout.SOUTH);
+   }
+
+   public JDesktopPane getDesktopPane() {
+       return desktopPane;
+   }
+   
+   /** @pdGenerated default getter */
+   public java.util.Collection<Table> getTable() {
+      if (table == null)
+         table = new java.util.HashSet<Table>();
+      return table;
+   }
+   
+   /** @pdGenerated default iterator getter */
+   public java.util.Iterator getIteratorTable() {
+      if (table == null)
+         table = new java.util.HashSet<Table>();
+      return table.iterator();
+   }
+   
+   /** @pdGenerated default setter
+     * @param newTable */
+   public void setTable(java.util.Collection<Table> newTable) {
+      removeAllTable();
+      for (java.util.Iterator iter = newTable.iterator(); iter.hasNext();)
+         addTable((Table)iter.next());
+   }
+   
+   /** @pdGenerated default add
+     * @param newTable */
+   public void addTable(Table newTable) {
+      if (newTable == null)
+         return;
+      if (this.table == null)
+         this.table = new java.util.HashSet<Table>();
+      if (!this.table.contains(newTable))
+         this.table.add(newTable);
+   }
+   
+   /** @pdGenerated default remove
+     * @param oldTable */
+   public void removeTable(Table oldTable) {
+      if (oldTable == null)
+         return;
+      if (this.table != null)
+         if (this.table.contains(oldTable))
+            this.table.remove(oldTable);
+   }
+   
+   /** @pdGenerated default removeAll */
+   public void removeAllTable() {
+      if (table != null)
+         table.clear();
+   }
+   /** @pdGenerated default getter */
+   public java.util.Collection<Toolbar> getToolbar() {
+      if (toolbar == null)
+         toolbar = new java.util.HashSet<Toolbar>();
+      return toolbar;
+   }
+   
+   /** @pdGenerated default iterator getter */
+   public java.util.Iterator getIteratorToolbar() {
+      if (toolbar == null)
+         toolbar = new java.util.HashSet<Toolbar>();
+      return toolbar.iterator();
+   }
+   
+   /** @pdGenerated default setter
+     * @param newToolbar */
+   public void setToolbar(java.util.Collection<Toolbar> newToolbar) {
+      removeAllToolbar();
+      for (java.util.Iterator iter = newToolbar.iterator(); iter.hasNext();)
+         addToolbar((Toolbar)iter.next());
+   }
+   
+   /** @pdGenerated default add
+     * @param newToolbar */
+   public void addToolbar(Toolbar newToolbar) {
+      if (newToolbar == null)
+         return;
+      if (this.toolbar == null)
+         this.toolbar = new java.util.HashSet<Toolbar>();
+      if (!this.toolbar.contains(newToolbar))
+         this.toolbar.add(newToolbar);
+   }
+   
+   /** @pdGenerated default remove
+     * @param oldToolbar */
+   public void removeToolbar(Toolbar oldToolbar) {
+      if (oldToolbar == null)
+         return;
+      if (this.toolbar != null)
+         if (this.toolbar.contains(oldToolbar))
+            this.toolbar.remove(oldToolbar);
+   }
+   
+   /** @pdGenerated default removeAll */
+   public void removeAllToolbar() {
+      if (toolbar != null)
+         toolbar.clear();
+   }
+   /** @pdGenerated default getter */
+   public java.util.Collection<Menubar> getMenubar() {
+      if (menubar == null)
+         menubar = new java.util.HashSet<Menubar>();
+      return menubar;
+   }
+   
+   /** @pdGenerated default iterator getter */
+   public java.util.Iterator getIteratorMenubar() {
+      if (menubar == null)
+         menubar = new java.util.HashSet<Menubar>();
+      return menubar.iterator();
+   }
+   
+   /** @pdGenerated default setter
+     * @param newMenubar */
+   public void setMenubar(java.util.Collection<Menubar> newMenubar) {
+      removeAllMenubar();
+      for (java.util.Iterator iter = newMenubar.iterator(); iter.hasNext();)
+         addMenubar((Menubar)iter.next());
+   }
+   
+   /** @pdGenerated default add
+     * @param newMenubar */
+   public void addMenubar(Menubar newMenubar) {
+      if (newMenubar == null)
+         return;
+      if (this.menubar == null)
+         this.menubar = new java.util.HashSet<Menubar>();
+      if (!this.menubar.contains(newMenubar))
+         this.menubar.add(newMenubar);
+   }
+   
+   /** @pdGenerated default remove
+     * @param oldMenubar */
+   public void removeMenubar(Menubar oldMenubar) {
+      if (oldMenubar == null)
+         return;
+      if (this.menubar != null)
+         if (this.menubar.contains(oldMenubar))
+            this.menubar.remove(oldMenubar);
+   }
+   
+   /** @pdGenerated default removeAll */
+   public void removeAllMenubar() {
+      if (menubar != null)
+         menubar.clear();
+   }
+   /** @pdGenerated default getter */
+   public java.util.Collection<Statusbar> getStatusbar() {
+      if (statusbar == null)
+         statusbar = new java.util.HashSet<Statusbar>();
+      return statusbar;
+   }
+   
+   /** @pdGenerated default iterator getter */
+   public java.util.Iterator getIteratorStatusbar() {
+      if (statusbar == null)
+         statusbar = new java.util.HashSet<Statusbar>();
+      return statusbar.iterator();
+   }
+   
+   /** @pdGenerated default setter
+     * @param newStatusbar */
+   public void setStatusbar(java.util.Collection<Statusbar> newStatusbar) {
+      removeAllStatusbar();
+      for (java.util.Iterator iter = newStatusbar.iterator(); iter.hasNext();)
+         addStatusbar((Statusbar)iter.next());
+   }
+   
+   /** @pdGenerated default add
+     * @param newStatusbar */
+   public void addStatusbar(Statusbar newStatusbar) {
+      if (newStatusbar == null)
+         return;
+      if (this.statusbar == null)
+         this.statusbar = new java.util.HashSet<Statusbar>();
+      if (!this.statusbar.contains(newStatusbar))
+         this.statusbar.add(newStatusbar);
+   }
+   
+   /** @pdGenerated default remove
+     * @param oldStatusbar */
+   public void removeStatusbar(Statusbar oldStatusbar) {
+      if (oldStatusbar == null)
+         return;
+      if (this.statusbar != null)
+         if (this.statusbar.contains(oldStatusbar))
+            this.statusbar.remove(oldStatusbar);
+   }
+   
+   /** @pdGenerated default removeAll */
+   public void removeAllStatusbar() {
+      if (statusbar != null)
+         statusbar.clear();
+   }
+   /** @pdGenerated default getter */
+   public java.util.Collection<BrowserPanel> getBrowserPanel() {
+      if (browserPanel == null)
+         browserPanel = new java.util.HashSet<BrowserPanel>();
+      return browserPanel;
+   }
+   
+   /** @pdGenerated default iterator getter */
+   public java.util.Iterator getIteratorBrowserPanel() {
+      if (browserPanel == null)
+         browserPanel = new java.util.HashSet<BrowserPanel>();
+      return browserPanel.iterator();
+   }
+   
+   /** @pdGenerated default setter
+     * @param newBrowserPanel */
+   public void setBrowserPanel(java.util.Collection<BrowserPanel> newBrowserPanel) {
+      removeAllBrowserPanel();
+      for (java.util.Iterator iter = newBrowserPanel.iterator(); iter.hasNext();)
+         addBrowserPanel((BrowserPanel)iter.next());
+   }
+   
+   /** @pdGenerated default add
+     * @param newBrowserPanel */
+   public void addBrowserPanel(BrowserPanel newBrowserPanel) {
+      if (newBrowserPanel == null)
+         return;
+      if (this.browserPanel == null)
+         this.browserPanel = new java.util.HashSet<BrowserPanel>();
+      if (!this.browserPanel.contains(newBrowserPanel))
+         this.browserPanel.add(newBrowserPanel);
+   }
+   
+   /** @pdGenerated default remove
+     * @param oldBrowserPanel */
+   public void removeBrowserPanel(BrowserPanel oldBrowserPanel) {
+      if (oldBrowserPanel == null)
+         return;
+      if (this.browserPanel != null)
+         if (this.browserPanel.contains(oldBrowserPanel))
+            this.browserPanel.remove(oldBrowserPanel);
+   }
+   
+   /** @pdGenerated default removeAll */
+   public void removeAllBrowserPanel() {
+      if (browserPanel != null)
+         browserPanel.clear();
+   }
+   /** @pdGenerated default getter */
+   public java.util.Collection<FormPanel> getFormPanel() {
+      if (formPanel == null)
+         formPanel = new java.util.HashSet<FormPanel>();
+      return formPanel;
+   }
+   
+   /** @pdGenerated default iterator getter */
+   public java.util.Iterator getIteratorFormPanel() {
+      if (formPanel == null)
+         formPanel = new java.util.HashSet<FormPanel>();
+      return formPanel.iterator();
+   }
+   
+   /** @pdGenerated default setter
+     * @param newFormPanel */
+   public void setFormPanel(java.util.Collection<FormPanel> newFormPanel) {
+      removeAllFormPanel();
+      for (java.util.Iterator iter = newFormPanel.iterator(); iter.hasNext();)
+         addFormPanel((FormPanel)iter.next());
+   }
+   
+   /** @pdGenerated default add
+     * @param newFormPanel */
+   public void addFormPanel(FormPanel newFormPanel) {
+      if (newFormPanel == null)
+         return;
+      if (this.formPanel == null)
+         this.formPanel = new java.util.HashSet<FormPanel>();
+      if (!this.formPanel.contains(newFormPanel))
+         this.formPanel.add(newFormPanel);
+   }
+   
+   /** @pdGenerated default remove
+     * @param oldFormPanel */
+   public void removeFormPanel(FormPanel oldFormPanel) {
+      if (oldFormPanel == null)
+         return;
+      if (this.formPanel != null)
+         if (this.formPanel.contains(oldFormPanel))
+            this.formPanel.remove(oldFormPanel);
+   }
+   
+   /** @pdGenerated default removeAll */
+   public void removeAllFormPanel() {
+      if (formPanel != null)
+         formPanel.clear();
+   }
+
+}

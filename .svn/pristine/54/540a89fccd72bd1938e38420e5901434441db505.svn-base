@@ -1,0 +1,90 @@
+package model;
+
+import java.util.HashMap;
+import java.util.List;
+
+import javax.swing.table.AbstractTableModel;
+
+import model.TreeElement.Column;
+
+/**
+ * Apstraktna klasa koja predstavlja model tabele za rad sa podacima u tabeli.
+ * Nasljedjuje {@link AbstractTableModel} i definise strukturu i osnovne metode 
+ * za manipulaciju podacima u tabeli, ukljucujuci pristup kolonama, redovima,
+ * kao i CRUD operacije koje se implementiraju u izvedenim klasama.
+ * 
+ * @author G4
+ */
+public abstract class GeneralTableModel extends AbstractTableModel {
+	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * Lista kolona koje definisu strukturu tabele.
+	 */
+	protected List<Column> columns = null;
+	
+	/**
+	 * Lista redova gdje svaki red predstavlja listu objekata.
+	 */
+	protected List<List<Object>> data = null;
+	
+	
+	@Override
+	public int getRowCount() {
+	
+		return data.size();
+	}
+
+	@Override
+	public int getColumnCount() {
+		return columns.size();
+	}
+
+	@Override
+	public Object getValueAt(int rowIndex, int columnIndex) {		
+		return data.get(rowIndex).get(columnIndex);
+	}
+	
+	@Override
+	public String getColumnName(int column) {
+		return columns.get(column).getName();
+	}
+	
+	public List<Column> getColumns() {
+		return this.columns;
+	}
+	
+   /** Metoda koja vraća indeks kolone na osnovu njenog naziva.
+    * 
+    * @param name Naziv kolone.
+    * @return Indeks kolone sa datim nazivom, ili -1 ako kolona ne postoji.
+    */
+	public int getIndexOfColumn(String name) {
+		for(int i = 1; i < columns.size(); i++) {
+			if(columns.get(i).getName().equals(name)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	/**
+	 * Metoda koja vraca objekat {@link Column} na osnovu indeksa.
+	 * 
+	 * @param i indeks kolone
+	 * @return kolona na datom indeksu
+	 */
+	public Column getColumn(int i) {
+		return columns.get(i);
+	}
+	
+	
+
+	public abstract void getAllData();
+	public abstract boolean deleteRowById(Object id);
+	public abstract boolean deleteRowById(List<Object> ids);
+	public abstract boolean getRowById(Object id);
+	public abstract boolean addRow(HashMap<String, Object> params);
+	public abstract boolean editRow(HashMap<String, Object> params);
+
+}

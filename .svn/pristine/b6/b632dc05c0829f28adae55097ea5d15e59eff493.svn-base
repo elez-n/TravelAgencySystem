@@ -1,0 +1,33 @@
+package model;
+
+
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import model.states.IAppState;
+
+/**
+ * Klasa Model predstavlja centralni deo aplikacije i cuva kolekcije 
+ * razlicitih objekata kao sto su StoredProcedure, XMLTreeModel i IAppState.  
+ * Omogucava dodavanje, uklanjanje i dobijanje ovih objekata.
+ *  */
+public class Model {
+ java.util.Collection<XMLTreeModel> xMLTreeModel;
+   
+   public java.util.Collection<IAppState> iAppState;
+   private int accessLevel;
+
+   private final XMLTreeModel xmlTreeModel;
+
+	public XMLTreeModel getTreeModel() {
+		return xmlTreeModel;
+	}
+
+	/**
+	 * Konstruktor klase Model. Inicijalizuje XMLTreeModel.
+	 */
+	public Model(int accessLevel) {
+		this.accessLevel=accessLevel;
+		//System.out.println("level: " + this.accessLevel);
+		this.xmlTreeModel = new XMLTreeModel(new DefaultMutableTreeNode(),accessLevel);
+	}
+}

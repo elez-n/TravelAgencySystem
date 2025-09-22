@@ -1,0 +1,115 @@
+package view;
+
+import javax.swing.*;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import java.awt.*;
+import model.TreeElement;
+
+
+/**
+ * {@code CustomTreeCellRenderer} je prilagođeni renderer za JTree koji omogućava
+ * prikaz različitih ikonica i stilizovanih fontova za čvorove stabla.
+ * 
+ * Ova klasa menja default prikaz čvorova stabla kako bi:
+ * 
+ *     Root čvor imao posebnu ikonicu
+ *     Paket čvorovi (TreeElement.Package) imali različite ikonice zavisno od naziva
+ *     Table čvorovi (TreeElement.Table) imali standardnu ikonicu tabele
+ * 
+ * 
+ * @author G4
+ */
+public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
+
+    private static final long serialVersionUID = 1L;
+
+    private Icon defaultTableIcon = new ImageIcon(new ImageIcon("resources/table-list.png")
+                                .getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH));
+    
+    
+
+    /**
+     * Metoda koja se poziva prilikom renderovanja svakog čvora stabla.
+     * Mijenja ikonicu i stil čvora u zavisnosti od tipa i naziva čvora.
+     * 
+     * @param tree JTree koji se renderuje
+     * @param value Čvor koji se trenutno renderuje
+     * @param sel Da li je čvor selektovan
+     * @param expanded Da li je čvor proširen
+     * @param leaf Da li je čvor leaf
+     * @param row Redni broj čvora
+     * @param hasFocus Da li čvor ima fokus
+     * @return Komponenta koja predstavlja vizuelni prikaz čvora
+     */
+    @Override
+    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel,
+                                                  boolean expanded, boolean leaf, int row, boolean hasFocus) {
+
+        super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+
+        setFont(new Font("SansSerif", Font.PLAIN, 13));
+        setForeground(Color.BLACK);
+
+        Icon icon = null;
+
+        if (tree.getModel().getRoot() == value) {
+            icon = loadIcon("resources/root.png", 35, 35);
+        }
+        else if (value instanceof TreeElement.Package) {
+            TreeElement.Package pack = (TreeElement.Package) value;
+            switch (pack.getName()) {
+                case "Šifarnici":
+                    icon = loadIcon("resources/key.png", 25, 25);
+                    break;
+                case "Administracija poslovnih sistema":
+                    icon = loadIcon("resources/admin.png", 25, 22);
+                    break;
+                case "Administracija korisnika":
+                    icon = loadIcon("resources/adminUsers.png", 25, 25);
+                    break;
+                case "Vozila":
+                    icon = loadIcon("resources/vehicle.png", 25, 25);
+                    break;
+                case "Putovanja":
+                    icon = loadIcon("resources/trip.png", 25, 25);
+                    break;
+                case "Klijenti":
+                    icon = loadIcon("resources/clients.png", 25, 25);
+                    break;
+                case "Cjenovnik":
+                    icon = loadIcon("resources/pricelist.png", 25, 25);
+                    break;
+                case "Izvještaji":
+                    icon = loadIcon("resources/reports.png", 25, 25);
+                    break;
+                case "Evidencije aktivnosti":
+                    icon = loadIcon("resources/log.png", 25, 25);
+                    break;
+                default:
+                    icon = loadIcon("resources/package.png", 25, 25);
+                    break;
+            }
+        }
+        else if (value instanceof TreeElement.Table) {
+            icon = defaultTableIcon;
+        }
+
+        if (icon != null) {
+            setIcon(icon);
+        }
+
+        return this;
+    }
+
+    /**
+     * Pomoćna metoda za učitavanje i skaliranje ikonice sa diska.
+     * 
+     * @param path Putanja do slike
+     * @param width Širina ikonice
+     * @param height Visina ikonice
+     * @return Skalirana ikonica
+     */
+    private Icon loadIcon(String path, int width, int height) {
+        return new ImageIcon(new ImageIcon(path).getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
+    }
+}

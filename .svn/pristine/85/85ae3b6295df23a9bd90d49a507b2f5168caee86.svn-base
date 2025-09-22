@@ -1,0 +1,193 @@
+package model.states;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JOptionPane;
+
+import model.CustomTableModel;
+import model.GeneralTableModel;
+import model.TreeElement;
+import model.TreeElement.Column;
+//import view.CustomRowHeader;
+import view.MainView;
+
+/**
+ * Klasa koja opisuje stanje u aplikaciji kada je korisnik izabrao neki red iz
+ * tabele.
+ * 
+ * @author grupa4
+ */
+
+public class SelectionState extends AbstractAppState {
+
+	public SelectionState(MainView window) {
+		super(window);
+		// TODO Auto-generated constructor stub
+		statusbar.setState("Selection");
+		// */
+
+		//this.handleSpecificSelection();
+
+		this.toolbar.setAllButtonsEnabled(true);
+		this.menubar.acceptItem.setEnabled(true);
+		this.menubar.cancelItem.setEnabled(true);
+		this.menubar.deleteItem.setEnabled(true);
+		this.menubar.firstItem.setEnabled(true);
+		this.menubar.lastItem.setEnabled(true);
+		this.menubar.previousItem.setEnabled(true);
+		this.menubar.nextItem.setEnabled(true);
+		this.menubar.reportItem.setEnabled(true);
+		this.menubar.editItem.setEnabled(true);
+		this.menubar.newItem.setEnabled(true);
+	}
+
+	@Override
+	public void handleCreate() {
+		// TODO Auto-generated method stub
+		/*form.clearAll();
+		form.enableInputs();
+		table.getSelectionModel().clearSelection();
+		form.setVisible(true);
+
+		window.setAppState(new CreationState(window));*/
+	}
+
+	@Override
+	public void handleChange() {
+		// TODO Auto-generated method stub
+		/*int row = table.getSelectedRow();
+		int cols = table.getColumnCount();
+		if (row >= 0) {
+			List<Object> rowData = new ArrayList<>();
+			for (int i = 0; i < cols; i++) {
+				rowData.add(table.getValueAt(row, i));
+			}
+			form.clearAll();
+			form.fillInputs(rowData);
+			form.enableInputs();
+			form.disablePrimaryInputs();
+			form.setVisible(true);
+
+		}*/
+	}
+
+	@Override
+	public void handleDelete() {
+		// TODO Auto-generated method stub
+		int selectedRow = window.getTablePanel().getTable().getSelectedRow();
+	    if (selectedRow < 0) {
+	        JOptionPane.showMessageDialog(window, "Nijedan red nije selektovan.");
+	        return;
+	    }
+
+	    GeneralTableModel tblModel = (GeneralTableModel) window.getTablePanel().getTable().getModel();
+	    List<Object> primaryKeys = new ArrayList<>();
+
+	    // skupimo sve primarne ključeve
+	    for (int i = 0; i < tblModel.getColumnCount(); i++) {
+	        Column col = tblModel.getColumn(i);
+	        if (col.isPrimary()) {
+	            Object keyValue = window.getTablePanel().getTable().getValueAt(selectedRow, i);
+	            primaryKeys.add(keyValue);
+	        }
+	    }
+
+	    if (primaryKeys.isEmpty()) {
+	        JOptionPane.showMessageDialog(window, "Primarni ključ nije pronađen, brisanje nije moguće.");
+	        return;
+	    }
+
+	    int result = JOptionPane.showConfirmDialog(window,
+	            "Da li želite da obrišete selektovani red?",
+	            "Potvrda brisanja", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+	    if (result == JOptionPane.YES_OPTION) {
+	        boolean success;
+	        if (primaryKeys.size() == 1) {
+	            success = tblModel.deleteRowById(primaryKeys.get(0));
+	        } else {
+	            success = tblModel.deleteRowById(primaryKeys);
+	        }
+
+	        if (success) {
+	            JOptionPane.showMessageDialog(window, "Red uspješno obrisan.");
+	            window.getTablePanel().getFormPanel().clearAll();
+	            tblModel.getAllData();
+	            window.getTablePanel().getTable().revalidate();
+	            window.getTablePanel().adjustColumnWidths();
+
+	           /* CustomRowHeader rowHeader = window.getRowHeader();
+	            rowHeader.updateRowHeader(window.getTablePanel().getTable()); 
+	            rowHeader.revalidate();
+	            rowHeader.repaint();
+	            window.getTablePanel().getTable().setAutoCreateRowSorter(true);*/
+	        } else {
+	            JOptionPane.showMessageDialog(window, "Brisanje nije uspjelo.");
+	        }
+	    }
+	}
+
+	@Override
+	public void handleCancel() {
+	/*	form.clearAll();
+		window.getMainTable().getSelectionModel().clearSelection();
+		form.setVisible(false);
+		window.setAppState(new ActiveState(window, ""));*/
+	}
+
+	@Override
+	public void handleSubmit() {/*
+		// TODO Auto-generated method stub
+		if (!form.validateInputs()) {
+			JOptionPane.showMessageDialog(null, "Polja oznacena sa * su obavezna!");
+		} else {
+			handleSpecificSubmit();
+		}*/
+	}
+
+	@Override
+	protected void handleSpecificSelection() {
+	/*	handleChange();
+		form.disableInputs();
+		form.revalidate();*/
+	}
+
+	@Override
+	protected void handleSpecificSubmit() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void handleNext() {
+		int red = window.getTablePanel().getTable().getSelectedRow();
+		red++;
+		if (red >= window.getTablePanel().getTable().getRowCount())
+			red = 0;
+		window.getTablePanel().getTable().setRowSelectionInterval(red, red);
+
+	}
+
+	@Override
+	public void handleFirst() {
+		window.getTablePanel().getTable().setRowSelectionInterval(0, 0);
+
+	}
+
+	@Override
+	public void handlePrev() {
+		int red = window.getTablePanel().getTable().getSelectedRow();
+		red--;
+		if (red < 0)
+			red = window.getTablePanel().getTable().getRowCount() - 1;
+		window.getTablePanel().getTable().setRowSelectionInterval(red, red);
+
+	}
+
+	@Override
+	public void handleLast() {
+		window.getTablePanel().getTable().setRowSelectionInterval(window.getTablePanel().getTable().getRowCount() - 1, window.getTablePanel().getTable().getRowCount() - 1);
+
+	}
+
+}

@@ -1,0 +1,25 @@
+/***********************************************************************
+ * Module:  Main.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class Main
+ ***********************************************************************/
+
+package main;
+
+import java.util.*;
+
+import controller.LoginView;
+import view.MainView;
+
+/** @pdOid 1fafd509-25c7-4c77-a104-1aa355fd5e87 */
+public class Main {
+	public static void main(String[] args) {
+        // Kreiranje i prikaz login forme
+           /* LoginView loginView = new LoginView();
+            loginView.pack();
+            loginView.setVisible(true);*/
+		
+		 MainView mainFrame = new MainView();
+         mainFrame.setVisible(true);
+    }
+}

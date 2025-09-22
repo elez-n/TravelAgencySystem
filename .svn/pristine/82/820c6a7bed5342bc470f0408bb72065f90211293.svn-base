@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  IdleState.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class IdleState
+ ***********************************************************************/
+
+package model;
+
+import java.util.*;
+
+/** @pdOid 64455450-e057-4ffe-bbaf-45350e7287ca */
+public class IdleState implements IAppState {
+}

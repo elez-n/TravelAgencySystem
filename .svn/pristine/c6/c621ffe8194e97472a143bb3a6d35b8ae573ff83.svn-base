@@ -1,0 +1,75 @@
+/***********************************************************************
+ * Module:  EditState.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class EditState
+ ***********************************************************************/
+
+package model.states;
+
+import java.util.*;
+
+import javax.swing.event.ListSelectionEvent;
+
+/** @pdOid 11928aeb-9604-4dd7-b62c-5e38f799dc6f */
+public class EditState implements IAppState {
+
+	@Override
+	public void handleSelectionChanged(ListSelectionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleCreate() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleChange() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleDelete() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleCancel() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleSubmit() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleNext() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleFirst() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handlePrev() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleLast() {
+		// TODO Auto-generated method stub
+		
+	}
+}

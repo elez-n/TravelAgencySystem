@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  IAppState.java
+ * Author:  Korisnik
+ * Purpose: Defines the Interface IAppState
+ ***********************************************************************/
+
+package model;
+
+import java.util.*;
+
+/** @pdOid 44a56501-c320-48a4-a00a-de9178b1901a */
+public interface IAppState {
+}

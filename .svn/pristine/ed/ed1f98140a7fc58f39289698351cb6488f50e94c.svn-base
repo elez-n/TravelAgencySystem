@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  CreationState.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class CreationState
+ ***********************************************************************/
+
+package model;
+
+import java.util.*;
+
+/** @pdOid 6482cf5c-e288-43b6-8e3f-576401ba05e4 */
+public class CreationState implements IAppState {
+}

@@ -1,0 +1,65 @@
+package model.states;
+
+import javax.swing.event.ListSelectionEvent;
+
+/**
+ * Interfejs sa potpisima metoda koje će po potrebi implementirati konkretna
+ * stanja aplikacije.
+ * 
+ * @author grupa4
+ */
+
+public interface IAppState {
+
+	/**
+	 * Metoda za obradu promjene selekcije u glavnoj tabeli
+	 * 
+	 * @param e ListSelectionEvent
+	 */
+	void handleSelectionChanged(ListSelectionEvent e);
+
+	/**
+	 * Metoda za obradu prelaska u stanje kreiranja novog reda u tabeli
+	 */
+	void handleCreate();
+
+	/**
+	 * Metoda za obradu prelaska u stanje izmjene reda tabele
+	 */
+	void handleChange();
+
+	/**
+	 * Metoda za obradu uklanjanja reda iz tabele
+	 */
+	void handleDelete();
+
+	/**
+	 * Metoda za obradu klika na dugme cancel
+	 */
+	void handleCancel();
+
+	/**
+	 * Metoda za obradu klika na dugme submit
+	 */
+	void handleSubmit();
+
+	/**
+	 * Metoda za promjenu selekcije unaprijed
+	 */
+	void handleNext();
+
+	/**
+	 * Metoda za promjenu selekcije na prvi red u tabeli
+	 */
+	void handleFirst();
+
+	/**
+	 * Metoda za promjenu selekcije unazad
+	 */
+	void handlePrev();
+
+	/**
+	 * Metoda za promjenu selekcije na zadnji red u tabeli
+	 */
+	void handleLast();
+}

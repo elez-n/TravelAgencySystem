@@ -1,0 +1,179 @@
+package view;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import javax.swing.BorderFactory;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+import model.TreeElement.Column;
+
+/**
+ * {@code TextField} predstavlja prilagođeni panel sa JLabel i JFormattedTextField
+ * koji implementira {@link IInputField} interfejs.
+ */
+public class TextField extends JPanel implements IInputField {
+
+    private static final long serialVersionUID = 1L;
+    private Column column;
+    private JFormattedTextField formattedField;
+    private Component referenceBtn;
+    private String name;
+
+    /**
+     * Konstruktor kreira TextField sa labelom i formatiranim poljem na osnovu kolone.
+     * 
+     * @param label tekst koji će biti prikazan pored polja
+     * @param formattedTextField JFormattedTextField koji se koristi za unos
+     * @param column metadata kolone iz modela
+     */
+    public TextField(String label, JFormattedTextField formattedTextField, Column column) {
+        this.formattedField = formattedTextField;
+        this.column = column;
+        this.name = label;
+
+        // null-safe provjera primarnog ključa
+        boolean isPrimary = Boolean.TRUE.equals(column.isPrimary());
+        this.formattedField.setEnabled(!isPrimary);
+
+        if (column.getSize() < 60) {
+            this.formattedField.setPreferredSize(new Dimension(160, 20));
+        } else if (column.getSize() > 120) {
+            this.formattedField.setPreferredSize(new Dimension((int) (column.getSize() * 1.1) + 40, 20));
+        } else {
+            this.formattedField.setPreferredSize(new Dimension((int) (column.getSize() * 0.8) + 40, 20));
+        }
+
+        if (column.getRefTable() != null) {
+            setEnabled(false);
+        }
+
+        this.formattedField.getDocument().addDocumentListener(new ChangeListener());
+        this.formattedField.setBackground(new Color(173, 216, 230));
+        this.formattedField.setForeground(new Color(0, 0, 0));
+        this.formattedField.setDisabledTextColor(Color.DARK_GRAY);
+
+        String displayLabel = label;
+        if (!column.isNullable()) {  // ako nije nullable => obavezno polje
+            displayLabel += "*";
+        }
+        JLabel labela = new JLabel(displayLabel);
+
+        labela.setBackground(new Color(128, 128, 128));
+        labela.setForeground(new Color(0, 0, 0));
+        labela.setLabelFor(this.formattedField);
+        labela.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        formattedTextField.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+
+        setBackground(Color.white);
+        setBorder(new EmptyBorder(7, 15, 7, 15));
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        add(labela, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        add(this.formattedField, gbc);
+
+        setVisible(true);
+    }
+
+    @Override
+    public Object getValue() {
+        return formattedField.getValue();
+    }
+
+    @Override
+    public void setValue(Object object) {
+        formattedField.setValue(object);
+    }
+
+    @Override
+    public void setReferenceBtn(Component btn) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(0, 4, 0, 0);
+
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        this.referenceBtn = btn;        
+        btn.setEnabled(true);
+        add(btn, gbc);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        if (referenceBtn == null) {
+            formattedField.setEnabled(enabled);
+        } else {
+            // referenceBtn.setEnabled(enabled);
+            // referenceBtn.setVisible(enabled);
+        }
+    }
+
+    @Override
+    public boolean isPrimary() {
+        return Boolean.TRUE.equals(column.isPrimary()); // null-safe
+    }
+
+    @Override
+    public boolean isNullable() {
+        return Boolean.TRUE.equals(column.isNullable()); // null-safe
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    private class ChangeListener implements DocumentListener {
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            checkIfValid();
+        }
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            checkIfValid();
+        }
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            checkIfValid();
+        }
+        private void checkIfValid() {
+            boolean isValid = formattedField.isEditValid();
+            if (isValid) {
+                formattedField.setBorder(null);
+            } else {
+                formattedField.setBorder(BorderFactory.createLineBorder(Color.RED));
+            }
+        }
+    }
+
+	@Override
+	public void setColumnCode(String code) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getColumnCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}

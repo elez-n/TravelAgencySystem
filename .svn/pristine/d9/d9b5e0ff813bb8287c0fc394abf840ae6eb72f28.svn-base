@@ -1,0 +1,93 @@
+package view;
+
+import java.awt.Component;
+
+/**
+ * Ova interfejsna klasa definiše metode za dobijanje i postavljanje vrijednosti
+ * polja unosa, postavljanje imena, referentnog dugmeta i
+ * omogućavanje/onemogućavanje polja, pružajući informacije o tome da li je
+ * polje primarno ili može biti prazno, kao i dobijanje naziva polja.
+ * 
+ * @author G4
+ */
+public interface IInputField {
+	
+	/**
+     * Vraća vrijednost unosa u polju.
+     * 
+     * @return vrijednost polja, tip može biti Object
+     */
+	Object getValue();
+
+	
+	  /**
+     * Postavlja vrijednost polja.
+     * 
+     * @param object nova vrijednost polja
+     */
+	void setValue(Object object);
+
+	
+	  /**
+     * Postavlja naziv polja.
+     * 
+     * @param name naziv polja
+     */  
+	void setName(String name);
+
+	
+	 /**
+     * Povezuje referentnu komponentu ili dugme sa ovim poljem.
+     * 
+     * @param btn referentna komponenta
+     */
+	void setReferenceBtn(Component btn);
+
+	
+	 /**
+     * Omogućava ili onemogućava uređivanje polja.
+     * 
+     * @param enabled {@code true} za omogućavanje, {@code false} za onemogućavanje
+     */
+	void setEnabled(boolean enabled);
+
+	
+	 /**
+     * Provjerava da li je polje primarno.
+     * 
+     * @return {@code true} ako je polje primarno, inače {@code false}
+     */
+	boolean isPrimary();
+
+
+    /**
+     * Provjerava da li polje može biti prazno (nullable).
+     * 
+     * @return {@code true} ako polje može biti prazno, inače {@code false}
+     */
+	boolean isNullable();
+
+	
+
+    /**
+     * Vraća naziv polja.
+     * 
+     * @return naziv polja
+     */
+	String getName();
+
+	  /**
+     * Postavlja kod kolone (identifikator kolone) za ovo polje.
+     * 
+     * @param code kod kolone
+     */
+	void setColumnCode(String code);
+
+	
+	 /**
+     * Vraća kod kolone (identifikator kolone) ovog polja.
+     * 
+     * @return kod kolone
+     */
+	String getColumnCode();
+}

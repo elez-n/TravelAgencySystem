@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  Menubar.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class Menubar
+ ***********************************************************************/
+
+package view;
+
+import java.util.*;
+
+/** @pdOid 8133956b-bb9d-4e74-b7fa-02dabf68fad7 */
+public class Menubar {
+}

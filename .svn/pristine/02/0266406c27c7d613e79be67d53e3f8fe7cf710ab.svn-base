@@ -1,0 +1,199 @@
+package model;
+
+import db.DbManipulation;
+import db.StoredProcedures;
+import model.TreeElement;
+import model.TreeElement.Column;
+import model.TreeElement.Table;
+
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import javax.swing.JOptionPane;
+
+public class CustomTableModel extends GeneralTableModel {
+
+    private static final long serialVersionUID = 1L;
+    private final Table tableMeta;
+    private final StoredProcedures procedures;
+    private ResultSet resultSet;
+
+    public CustomTableModel(Table tableMeta) {
+        this.tableMeta = tableMeta;
+        this.procedures = new StoredProcedures(DbManipulation.createConnection());
+        this.columns = new ArrayList<>();
+        this.data = new ArrayList<>();
+        debugResultSetColumns();
+        loadDataFromProcedure();
+        debugColumnTypes();
+    }
+
+    private void loadDataFromProcedure() {
+        try {
+            resultSet = procedures.executeRetrieve(tableMeta.getRetrieveSProc(), null);
+            setColumnsFromResultSet(resultSet);
+            populateData(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            this.data = new ArrayList<>();
+        }
+        fireTableDataChanged();
+        fireTableStructureChanged();
+    }
+
+    private void setColumnsFromResultSet(ResultSet rs) throws SQLException {
+        ResultSetMetaData rsmd = rs.getMetaData();
+        int columnCount = rsmd.getColumnCount();
+
+        this.columns.clear();
+
+        // Dodaj dinamičke kolone iz tableMeta
+        for (int i = 0; i < tableMeta.getAllElements().size(); i++) {
+            Column col = (Column) tableMeta.getElementAt(i);
+            // Postavi tip, veličinu i scale iz ResultSetMetaData
+            col.setType(rsmd.getColumnClassName(i + 1)); // +1 jer ResultSetMetaData je 1-based
+            col.setSize(rsmd.getPrecision(i + 1));
+            col.setScale(rsmd.getScale(i + 1));
+            this.columns.add(col);
+        }
+    }
+
+
+
+
+
+    private void populateData(ResultSet rs) throws SQLException {
+        this.data.clear();
+        while (rs.next()) {
+            List<Object> row = new ArrayList<>();
+            // za svaki element iz tableMeta dodaj vrijednosti
+            for (int i = 0; i < tableMeta.getAllElements().size(); i++) {
+                Object value = rs.getObject(i + 1); // ResultSet indeksi počinju od 1
+                row.add(value);
+            }
+            this.data.add(row);
+        }
+    }
+
+
+
+
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        List<Object> row = data.get(rowIndex);
+        if (columnIndex >= row.size()) return null; // zaštita od IndexOutOfBounds
+        return row.get(columnIndex);
+    }
+
+    @Override
+    public void getAllData() {
+        loadDataFromProcedure();
+    }
+
+    @Override
+    public boolean deleteRowById(Object id) {
+        try {
+            List<Object> params = new ArrayList<>();
+            params.add(id);
+            int affected = procedures.executeUpdate(tableMeta.getDeleteSProc(), params);
+            if (affected > 0) {
+                getAllData();
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean addRow(HashMap<String, Object> params) {
+        try {
+            List<Object> ordered = new ArrayList<>();
+            for (Column col : columns) {
+                if (!col.isPrimary() && !"rowNumber".equals(col.code)) {
+                    ordered.add(params.get(col.getName()));
+                }
+            }
+            int affected = procedures.executeUpdate(tableMeta.getCreateSProc(), ordered);
+            if (affected > 0) {
+                getAllData();
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public String editRow(HashMap<String, Object> params) {
+        try {
+            List<Object> ordered = new ArrayList<>();
+            for (Column col : columns) {
+                if (!"rowNumber".equals(col.code)) {
+                    ordered.add(params.get(col.getName()));
+                }
+            }
+            int affected = procedures.executeUpdate(tableMeta.getUpdateSProc(), ordered);
+            if (affected > 0) {
+                getAllData();
+                return null;
+            }
+            return "No rows updated";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+
+    @Override
+    public boolean getRowById(Object id) {
+        try {
+            List<Object> params = new ArrayList<>();
+            params.add(id);
+            List<List<Object>> rows = procedures.readAll(tableMeta.getRetrieveSProc(), params, null);
+            if (!rows.isEmpty()) {
+                this.data = rows;
+                fireTableDataChanged();
+                fireTableStructureChanged();
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public void debugResultSetColumns() {
+        try (java.sql.ResultSet rs = procedures.executeRetrieve(tableMeta.getRetrieveSProc(), null)) {
+            java.sql.ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            System.out.println("===== ResultSet columns =====");
+            for (int i = 1; i <= columnCount; i++) {
+                String name = metaData.getColumnName(i);
+                String type = metaData.getColumnClassName(i);  // može biti null
+                System.out.println("Column " + i + ": " + name + " , type = " + type);
+            }
+            System.out.println("===== End of columns =====");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void debugColumnTypes() {
+        System.out.println("===== Column types in model =====");
+        for (int i = 0; i < columns.size(); i++) {
+            Column col = columns.get(i);
+            String type = col.getType();
+            System.out.println("Column " + i + ": " + col.getName() + " , type = " + type);
+        }
+        System.out.println("===== End of columns =====");
+    }
+
+
+}

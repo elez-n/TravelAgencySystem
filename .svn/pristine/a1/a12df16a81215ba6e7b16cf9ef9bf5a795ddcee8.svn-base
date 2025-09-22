@@ -1,0 +1,134 @@
+/***********************************************************************
+ * Module:  MainView.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class MainView
+ ***********************************************************************/
+
+package view;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.util.*;
+import view.Menubar;
+
+import javax.swing.BorderFactory;
+import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+
+import model.Model;
+import model.TreeElement;
+import model.states.IAppState;
+
+
+/**
+ *Klasa {@code MainView} predstavlja glavni grafički prozor aplikacije
+ * "TransPlan - Agencija za prevoz putnika".
+ *
+ * Klasa takođe prati trenutno stanje aplikacije preko {@link IAppState} i trenutno otvorenu tabelu.
+ * 
+ * @author G4
+ */
+public class MainView extends JFrame{
+   
+   public JDesktopPane desktopPane;
+
+   public TableFrame tablePanel = null;
+   public Toolbar toolbar;
+   public Table table;
+   public Menubar menubar;
+   public Statusbar statusbar;
+   public BrowserPanel browserPanel;
+   public JPanel mainPanel;
+   private IAppState appState;
+   private TreeElement.Table currentTable;
+
+
+   
+   /**
+    * Konstruktor koji inicijalizuje glavni prozor i sve njegove komponente.
+    * 
+    * @param model model aplikacije koji sadrži podatke i stablo tabela
+    */
+   public MainView(Model model) {
+       setTitle("TransPlan - Agencija za prevoz putnika");
+       setSize(1000, 700);
+       setLocationRelativeTo(null); // Centriraj prozor
+       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+       // Postavi meni bar
+       menubar = new Menubar();
+       setJMenuBar(menubar);
+       
+       
+    // Kreiraj i dodaj ToolBar na vrh (NORTH)
+       toolbar = new Toolbar();
+       getContentPane().add(toolbar, BorderLayout.NORTH);
+
+       // Glavni radni prostor
+       desktopPane = new JDesktopPane();
+       getContentPane().add(desktopPane, BorderLayout.CENTER);
+       
+
+       
+       // Browser panel sa lijeve strane
+       browserPanel = new BrowserPanel(model, this); // ovdje će biti tvoj JTree iz XML-a
+       browserPanel.setPreferredSize(new Dimension(250, 0)); // širina panela
+       getContentPane().add(browserPanel, BorderLayout.WEST);
+
+       statusbar = new Statusbar();
+       getContentPane().add(statusbar, BorderLayout.SOUTH);
+       
+   }
+   
+
+   
+	public void setAppState(IAppState appState) {
+		this.appState = appState;
+	}
+
+    public IAppState getAppState()
+	{
+		return appState;
+	}
+
+   public TableFrame getTablePanel() {
+	return tablePanel;
+}
+
+   public Toolbar getToolbar() {
+	return toolbar;
+   }
+
+   public Table getTable() {
+	return table;
+   }
+
+   public Menubar getMenubar() {
+	return menubar;
+   }
+
+   public Statusbar getStatusbar() {
+	return statusbar;
+   }
+
+   public JDesktopPane getDesktopPane() {
+       return desktopPane;
+   }
+   
+   public boolean hasOpenTable() {
+	    return currentTable != null;
+	}
+
+	public void setCurrentTable(TreeElement.Table table) {
+	    this.currentTable = table;
+	}
+
+	public TreeElement.Table getCurrentTable() {
+	    return currentTable;
+	}
+
+
+}

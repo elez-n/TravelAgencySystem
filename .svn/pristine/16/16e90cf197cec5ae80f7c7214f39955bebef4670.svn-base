@@ -1,0 +1,209 @@
+package model;
+
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+
+/**
+ * Model stabla za prikaz XML strukture baze podataka koristeci TreeElement kao cvorove stabla.
+ * 
+ * @author G4
+ */
+public class XMLTreeModel extends DefaultTreeModel {
+   
+Document document = null;
+	
+	XPathExpression xPathExpression = null;
+	
+	XPath xPath = null;
+	
+	TreeElement rootPackage;
+	
+	public XMLTreeModel(TreeNode root) {
+		super(root);
+		
+		try {
+			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newDefaultInstance();
+			DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+			
+			document = builder.parse("xml/xmlG4.xml");
+			
+			XPathFactory xPathFactory = XPathFactory.newInstance();
+			xPath = xPathFactory.newXPath();
+			
+			xPathExpression = xPath.compile("database");
+			Node database = (Node)xPathExpression.evaluate(document, XPathConstants.NODE);
+			
+			rootPackage = new TreeElement.Package();
+			rootPackage.code = null;
+			rootPackage.name = database.getAttributes().getNamedItem("name").getNodeValue();
+			
+			xPathExpression = xPath.compile("package");
+			NodeList packages = (NodeList) xPathExpression.evaluate(database, XPathConstants.NODESET);
+			
+			subPacks(packages, rootPackage);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void subPacks(NodeList packages, TreeElement rootPackage) throws XPathExpressionException {
+		for(int i = 0; i < packages.getLength(); i++) {
+			TreeElement tempPackage = new TreeElement.Package();
+			tempPackage.code = null;
+			tempPackage.name = packages.item(i).getAttributes().getNamedItem("name").getNodeValue();
+			rootPackage.addElement(tempPackage);
+			
+			xPathExpression = xPath.compile("package");
+			NodeList subpackages = (NodeList) xPathExpression.evaluate(packages.item(i), XPathConstants.NODESET);
+			
+			subPacks(subpackages, tempPackage);
+			
+			xPathExpression = xPath.compile("table");
+			NodeList tables = (NodeList) xPathExpression.evaluate(packages.item(i), XPathConstants.NODESET);
+			
+			for(int j = 0; j < tables.getLength(); j++) {
+				TreeElement.Table tempTable = new TreeElement.Table();
+				tempPackage.addElement(tempTable);
+				tempTable.code = tables.item(j).getAttributes().getNamedItem("code").getNodeValue();
+				tempTable.name = tables.item(j).getAttributes().getNamedItem("name").getNodeValue();
+				
+				xPathExpression = xPath.compile("column");
+				NodeList columns = (NodeList) xPathExpression.evaluate(tables.item(j), XPathConstants.NODESET);
+				
+				for(int k=0; k<columns.getLength();k++) {
+					TreeElement.Column tempColumn = new TreeElement.Column();
+					
+					tempColumn.code = columns.item(k).getAttributes().getNamedItem("code").getNodeValue();
+					tempColumn.name = columns.item(k).getAttributes().getNamedItem("name").getNodeValue();
+					
+					boolean tempBool = false;
+					
+                    String boolString = columns.item(k).getAttributes().getNamedItem("nullable").getNodeValue();
+                    tempBool = "true".equalsIgnoreCase(boolString);
+                    tempColumn.setNullable(tempBool);
+                    
+                    boolString = columns.item(k).getAttributes().getNamedItem("primary").getNodeValue();
+                    tempBool = "true".equalsIgnoreCase(boolString);
+                    tempColumn.setPrimary(tempBool);
+                    
+                    // parse optional FK markers inside <column>
+                    try {
+                        XPathExpression refColExpr = xPath.compile("refcolumn");
+                        Node refColNode = (Node) refColExpr.evaluate(columns.item(k), XPathConstants.NODE);
+                        if (refColNode != null && refColNode.getTextContent() != null && !refColNode.getTextContent().trim().isEmpty()) {
+                            tempColumn.setRefColumn(refColNode.getTextContent().trim());
+                        }
+                        XPathExpression refTblExpr = xPath.compile("reftable");
+                        Node refTblNode = (Node) refTblExpr.evaluate(columns.item(k), XPathConstants.NODE);
+                        if (refTblNode != null && refTblNode.getTextContent() != null && !refTblNode.getTextContent().trim().isEmpty()) {
+                            tempColumn.setRefTable(refTblNode.getTextContent().trim());
+                        }
+                        if (tempColumn.getRefTable() != null) {
+                            tempColumn.setForeign(true);
+                        }
+                    } catch (Exception ignore) {}
+                    
+					tempTable.addElement(tempColumn);
+					
+				}
+				
+				xPathExpression = xPath.compile("references");
+				NodeList reference = (NodeList) xPathExpression.evaluate(tables.item(j), XPathConstants.NODESET);
+
+				for (int k = 0; k < reference.getLength(); k++) {
+					TreeElement.Table refColumn = new TreeElement.Table();
+					refColumn.code = reference.item(k).getAttributes().getNamedItem("refTable").getNodeValue();
+
+					tempTable.addReference(refColumn);
+
+					xPathExpression = xPath.compile("refColumn");
+					NodeList refKolone = (NodeList) xPathExpression.evaluate(reference.item(k), XPathConstants.NODESET);
+					for (int l = 0; l < refKolone.getLength(); l++) {
+						TreeElement.Column refK = new TreeElement.Column();
+						refK.code = refKolone.item(l).getTextContent();
+						refColumn.addElement(refK);
+					}
+
+				}
+
+				xPathExpression = xPath.compile("crud/create");
+				Node create = (Node) xPathExpression.evaluate(tables.item(j), XPathConstants.NODE);
+
+				tempTable.setCreateSProc(create.getTextContent());
+
+				xPathExpression = xPath.compile("crud/retrieve");
+				Node retrieve = (Node) xPathExpression.evaluate(tables.item(j), XPathConstants.NODE);
+
+                tempTable.setRetrieveSProc(retrieve.getTextContent());
+
+				xPathExpression = xPath.compile("crud/update");
+				Node update = (Node) xPathExpression.evaluate(tables.item(j), XPathConstants.NODE);
+
+                tempTable.setUpdateSProc(update.getTextContent());
+
+				xPathExpression = xPath.compile("crud/delete");
+				Node delete = (Node) xPathExpression.evaluate(tables.item(j), XPathConstants.NODE);
+
+                tempTable.setDeleteSProc(delete.getTextContent());
+			}
+		}
+		
+	}
+
+	@Override
+	public Object getChild(Object parent, int index) {
+		if(parent instanceof TreeElement.Package) {
+			return ((TreeElement.Package) parent).getElementAt(index);			
+		}
+		else if (parent instanceof TreeElement.Table) {
+			return null;
+		}
+		return null;
+	}
+	
+	@Override
+	public int getChildCount(Object parent) {
+		if (parent instanceof TreeElement.Package) {
+			return ((TreeElement.Package) parent).getAllElements().size();
+		} else if (parent instanceof TreeElement.Table) {
+			return 0;
+		}
+		return 0;
+	}
+
+	@Override
+	public int getIndexOfChild(Object parent, Object child) {
+		if (parent instanceof TreeElement.Package) {
+			return ((TreeElement.Package) parent).getIndexOfElement((TreeElement) child);
+		} else if (parent instanceof TreeElement.Table) {
+			return -1;
+		}
+		return -1;
+	}
+
+	@Override
+	public Object getRoot() {
+		return this.rootPackage;
+	}
+
+	@Override
+	public boolean isLeaf(Object node) {
+		if (node instanceof TreeElement.Table) {
+			return true;
+		}
+		return false;
+	}
+}

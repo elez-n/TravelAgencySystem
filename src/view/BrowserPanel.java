@@ -1,0 +1,117 @@
+package view;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
+import javax.swing.tree.TreeSelectionModel;
+
+import listeners.BrowserSelectionListener;
+import listeners.TableSelectionListener;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.BorderFactory;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+
+import model.Model;
+import model.TreeElement;
+import model.states.ActiveState;
+
+
+/**
+ * Panel za prikaz hijerarhijske strukture podataka u vidu stabla ({@link JTree}).
+ * 
+ * Klasa {@code BrowserPanel} omogućava navigaciju kroz strukturu baze/modela.
+ * Kada korisnik odabere tabelu (list čvora u stablu), panel automatski prikazuje
+ * odgovarajući sadržaj u glavnom prozoru aplikacije ({@link MainView}).
+ *
+ * @author G4
+ */
+public class BrowserPanel extends JPanel {
+	private static final long serialVersionUID = 1L;
+	private JTree tree = null;
+	private MainView mainView = null;
+
+	
+	  /**
+     * Kreira novi {@code BrowserPanel} sa prosljeđenim modelom i glavnim prozorom.
+     *
+     * @param model    model podataka aplikacije koji sadrži strukturu stabla
+     * @param mainView referenca na glavni prozor aplikacije
+     */
+    	public BrowserPanel(Model model, MainView mainView) {
+    	    this.mainView = mainView;
+    	    setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+    	    tree = new JTree(model.getTreeModel());
+    	    tree.setCellRenderer(new CustomTreeCellRenderer());
+    	    tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+    	    tree.setRowHeight(32);
+    	    tree.addTreeSelectionListener(new TreeSelectionListener() {
+    	        @Override
+    	        public void valueChanged(TreeSelectionEvent e) {
+    	            Object node = tree.getLastSelectedPathComponent();
+    	            if (node instanceof TreeElement.Table) {
+    	                SwingUtilities.invokeLater(() -> {
+    	                    openTable((TreeElement.Table) node, mainView);
+    	                });
+    	            }
+    	        }
+    	    });
+
+    	    JScrollPane scrollPane = new JScrollPane(tree);
+
+    	    add(scrollPane);
+
+    	    setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    	    Border blueBorder = BorderFactory.createMatteBorder(2, 2, 0, 2, Color.BLUE);
+    	    setBorder(BorderFactory.createCompoundBorder(blueBorder, getBorder()));
+
+    	    setBackground(Color.decode("#FFFFFF"));
+    	    tree.setBackground(Color.decode("#FFFFFF"));
+    	    tree.addTreeSelectionListener(new BrowserSelectionListener(mainView));
+    	}
+        
+    	
+    	
+    	 public JTree getTree() {
+		return tree;
+	}
+
+
+
+		 /**
+         * Otvara tabelu u glavnom prozoru kada je korisnik odabere u stablu.
+         * 
+         * Metod podešava statusnu liniju, postavlja novi {@link TableFrame} u
+         * {@link JDesktopPane} i dodaje listener za selekciju reda.
+         *
+         * @param tableMeta meta-podaci o tabeli koja se otvara
+         */
+    	private void openTable(TreeElement.Table tableMeta, MainView mainView) {
+    	    if (mainView != null) {
+    	        mainView.tablePanel = new TableFrame(tableMeta, mainView);
+    	        
+    	        mainView.getStatusbar().setSelectedTable(tableMeta.getName());
+    	        JDesktopPane desktopPane = mainView.getDesktopPane();
+    	        desktopPane.removeAll();
+    	        desktopPane.setLayout(new BorderLayout());
+    	        
+    	        mainView.setCurrentTable(tableMeta);
+    	        mainView.getStatusbar().setCurrentRow(0, mainView.getTablePanel().getTable().getRowCount());
+
+    	        mainView.getTablePanel().getTable().getSelectionModel().addListSelectionListener(
+    	            new TableSelectionListener(mainView)
+    	        );
+    	        
+    	        desktopPane.add(mainView.tablePanel, BorderLayout.CENTER);
+
+    	        desktopPane.revalidate();
+    	        desktopPane.repaint();
+
+                mainView.setAppState(new ActiveState(mainView));
+    	    }
+    	}
+    }

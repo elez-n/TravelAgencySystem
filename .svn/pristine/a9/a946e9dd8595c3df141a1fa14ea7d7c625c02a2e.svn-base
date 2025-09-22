@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  EditState.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class EditState
+ ***********************************************************************/
+
+package model;
+
+import java.util.*;
+
+/** @pdOid 11928aeb-9604-4dd7-b62c-5e38f799dc6f */
+public class EditState implements IAppState {
+}

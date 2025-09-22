@@ -1,0 +1,128 @@
+package model.states;
+
+import java.awt.BorderLayout;
+
+import javax.swing.JDesktopPane;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+
+import model.CustomTableModel;
+import model.TreeElement.Table;
+import view.FormPanel;
+import view.MainView;
+
+/**
+ * Klasa koja opisuje stanje kreiranja i ažurira korisnički interfejs
+ * pri dodavanju novog reda u tabelu.
+ * 
+ * @author G4
+ */
+
+public class CreationState extends AbstractAppState {
+
+    public CreationState(MainView window) {
+        super(window);
+        
+        FormPanel form = window.getTablePanel().getFormPanel();
+        form.clearAll();
+        form.enableInputs();
+        //form.disablePrimaryInputs(); 
+
+        statusbar.setState("Creating");
+        toolbar.setVisible(true);
+        toolbar.setButtonsInCreationState();
+        this.menubar.acceptItem.setEnabled(true);
+        this.menubar.cancelItem.setEnabled(true);
+        this.menubar.deleteItem.setEnabled(false);
+        this.menubar.firstItem.setEnabled(false);
+        this.menubar.lastItem.setEnabled(false);
+        this.menubar.previousItem.setEnabled(false);
+        this.menubar.nextItem.setEnabled(false);
+        this.menubar.editItem.setEnabled(false);
+        this.menubar.newItem.setEnabled(false);
+    }
+
+    @Override
+    public void handleCreate() {
+        form.clearAll();
+      
+    }
+
+    @Override
+    public void handleCancel() {
+        // Očisti selekciju da nema označenog reda
+        window.getTablePanel().getTable().clearSelection();
+
+        // Očisti i sakrij form panel (ali ga ne gasimo trajno)
+        window.getTablePanel().getFormPanel().clearAll();
+
+        // Vrati desktop samo sa tabelom
+        JDesktopPane desktopPane = window.getDesktopPane();
+        desktopPane.removeAll();
+        desktopPane.setLayout(new BorderLayout());
+        desktopPane.add(window.getTablePanel(), BorderLayout.CENTER);
+        desktopPane.revalidate();
+        desktopPane.repaint();
+
+        // Prebaci stanje nazad na Active
+        window.setAppState(new ActiveState(window));
+    }
+
+
+    @Override
+    protected void handleSpecificSelection() {
+ 
+    }
+
+    @Override
+    protected void handleSpecificSubmit() {
+        boolean success = false;
+        CustomTableModel tblModel = (CustomTableModel) window.getTablePanel().getTable().getModel();
+
+        // Pokušaj dodavanja novog reda
+        success = tblModel.addRow(window.getTablePanel().getFormPanel().getValues());
+        if (success) {
+            JOptionPane.showMessageDialog(null, "Uspješno dodat novi red.");
+            
+            // Refresh podataka
+            tblModel.getAllData();
+
+            // Selektuj zadnji red (novododani)
+            int newRowCount = window.getTablePanel().getTable().getRowCount();
+            if (newRowCount > 0) {
+                window.getTablePanel().getTable().setRowSelectionInterval(newRowCount - 1, newRowCount - 1);
+            }
+
+            window.getTablePanel().getTable().revalidate();
+            window.getTablePanel().adjustColumnWidths();
+        } else {
+            JOptionPane.showMessageDialog(null, "Greška prilikom dodavanja reda.");
+        }
+    }
+
+
+    @Override
+    public void handleNext() {}
+
+    @Override
+    public void handleFirst() {}
+
+    @Override
+    public void handlePrev() {}
+
+    @Override
+    public void handleLast() {}
+
+    @Override
+    public void handleChange() {}
+
+	@Override
+	public void handleSubmit() {
+		// TODO Auto-generated method stub
+		if (!window.getTablePanel().getFormPanel().validateInputs()) {
+			JOptionPane.showMessageDialog(null, "Polja oznacena sa * su obavezna!");
+		} else {
+			handleSpecificSubmit();
+		}
+	}
+}

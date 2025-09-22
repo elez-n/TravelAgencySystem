@@ -1,0 +1,56 @@
+package listeners;
+
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import model.TreeElement;
+import model.states.ActiveState;
+import model.states.IdleState;
+import view.MainView;
+
+
+/**
+ * Klasa BrowserSelectionListener predstavlja osluskivac dogadjaja selekcije cvorova u JTree komponenti.
+ * 
+ * Na osnovu selektovanog cvora u stablu, klasa mijenja stanje aplikacije:
+ * Ako je selektovana tabela, prelazi se u aktivno stanje {@link ActiveState} i postavlja se trenutna tabela.
+ * Ako je selektovan paket ili kolona, a nijedna tabela nije otvorena, prelazi se u pasivno stanje {@link IdleState}.
+ * 
+ * Ova klasa povezuje korisnicki interfejs sa logikom stanja aplikacije.
+ * @author G4
+ * 
+ */
+public class BrowserSelectionListener implements TreeSelectionListener {
+
+    private MainView appView;
+
+    
+    /**
+     * Konstruktor klase BrowserSelectionListener.
+     * 
+     * @param appView instanca glavnog prikaza aplikacije
+     */
+    public BrowserSelectionListener(MainView appView) {
+        this.appView = appView;
+    }
+
+    
+    /**
+     * Metoda koja se poziva kada korisnik selektuje cvor u stablu.
+     * Na osnovu tipa selektovanog cvora, mijenja se stanje aplikacije.
+     * 
+     * @param e dogadjaj selekcije u stablu
+     */
+    @Override
+    public void valueChanged(TreeSelectionEvent e) {
+        Object selectedNode = ((javax.swing.JTree) e.getSource()).getLastSelectedPathComponent();
+
+        if (selectedNode instanceof TreeElement.Table) {
+            appView.setCurrentTable((TreeElement.Table) selectedNode);
+            
+        } else {
+            if (!appView.hasOpenTable()) {
+                appView.setAppState(new IdleState(appView));
+            }
+        }
+    }
+}

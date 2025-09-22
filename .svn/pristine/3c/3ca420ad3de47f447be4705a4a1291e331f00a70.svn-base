@@ -1,0 +1,66 @@
+/***********************************************************************
+ * Module:  LoginView.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class LoginView
+ ***********************************************************************/
+
+package controller;
+
+import java.util.*;
+
+/** @pdOid aea9710b-ccb3-4fc4-8e5d-211fc4640258 */
+public class LoginView {
+   /** @pdRoleInfo migr=no name=LoginController assc=association3 coll=java.util.Collection impl=java.util.HashSet mult=0..* */
+   public java.util.Collection<LoginController> loginController;
+   
+   
+   /** @pdGenerated default getter */
+   public java.util.Collection<LoginController> getLoginController() {
+      if (loginController == null)
+         loginController = new java.util.HashSet<LoginController>();
+      return loginController;
+   }
+   
+   /** @pdGenerated default iterator getter */
+   public java.util.Iterator getIteratorLoginController() {
+      if (loginController == null)
+         loginController = new java.util.HashSet<LoginController>();
+      return loginController.iterator();
+   }
+   
+   /** @pdGenerated default setter
+     * @param newLoginController */
+   public void setLoginController(java.util.Collection<LoginController> newLoginController) {
+      removeAllLoginController();
+      for (java.util.Iterator iter = newLoginController.iterator(); iter.hasNext();)
+         addLoginController((LoginController)iter.next());
+   }
+   
+   /** @pdGenerated default add
+     * @param newLoginController */
+   public void addLoginController(LoginController newLoginController) {
+      if (newLoginController == null)
+         return;
+      if (this.loginController == null)
+         this.loginController = new java.util.HashSet<LoginController>();
+      if (!this.loginController.contains(newLoginController))
+         this.loginController.add(newLoginController);
+   }
+   
+   /** @pdGenerated default remove
+     * @param oldLoginController */
+   public void removeLoginController(LoginController oldLoginController) {
+      if (oldLoginController == null)
+         return;
+      if (this.loginController != null)
+         if (this.loginController.contains(oldLoginController))
+            this.loginController.remove(oldLoginController);
+   }
+   
+   /** @pdGenerated default removeAll */
+   public void removeAllLoginController() {
+      if (loginController != null)
+         loginController.clear();
+   }
+
+}

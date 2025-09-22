@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  Button.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class Button
+ ***********************************************************************/
+
+package view;
+
+import java.util.*;
+
+/** @pdOid 19707680-47a9-4695-b9e0-9bc3ecbda469 */
+public class Button {
+}

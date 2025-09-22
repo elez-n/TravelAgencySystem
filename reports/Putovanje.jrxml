@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 9.0.0.final using JasperReports Library version 6.21.0-4f56c4f36cd19e17675219a9ac4692d5f0f13b06  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Putovanje" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="0" uuid="e115bc59-fd0f-446b-a585-04725e27d7f0">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<style name="Title" fontName="Arial" fontSize="26" isBold="true"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#FFFFFF" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT
+	Identifikator,
+	[Identifikator akcijske ponude],
+	[Identifikator tipa putovanja],
+	[Datum i vrijeme polaska],
+	[Datum i vrijeme povratka],
+	[Opis],
+	[Mjesto polaska],
+	[Udaljenost u km]
+FROM Putovanje]]>
+	</queryString>
+	<field name="Identifikator" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="Identifikator"/>
+		<property name="com.jaspersoft.studio.field.label" value="Identifikator"/>
+	</field>
+	<field name="Identifikator akcijske ponude" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="Identifikator akcijske ponude"/>
+		<property name="com.jaspersoft.studio.field.label" value="Identifikator akcijske ponude"/>
+	</field>
+	<field name="Identifikator tipa putovanja" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Identifikator tipa putovanja"/>
+		<property name="com.jaspersoft.studio.field.label" value="Identifikator tipa putovanja"/>
+	</field>
+	<field name="Datum i vrijeme polaska" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="Datum i vrijeme polaska"/>
+		<property name="com.jaspersoft.studio.field.label" value="Datum i vrijeme polaska"/>
+	</field>
+	<field name="Datum i vrijeme povratka" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="Datum i vrijeme povratka"/>
+		<property name="com.jaspersoft.studio.field.label" value="Datum i vrijeme povratka"/>
+	</field>
+	<field name="Opis" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Opis"/>
+		<property name="com.jaspersoft.studio.field.label" value="Opis"/>
+	</field>
+	<field name="Mjesto polaska" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Mjesto polaska"/>
+		<property name="com.jaspersoft.studio.field.label" value="Mjesto polaska"/>
+	</field>
+	<field name="Udaljenost u km" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="Udaljenost u km"/>
+		<property name="com.jaspersoft.studio.field.label" value="Udaljenost u km"/>
+	</field>
+	<background>
+		<band height="575" splitType="Stretch">
+			<image vAlign="Bottom">
+				<reportElement positionType="Float" x="-20" y="66" width="105" height="409" uuid="64ca4020-b604-4de9-9ed1-921b74cfd593"/>
+				<imageExpression><![CDATA["reports/waves.jpg"]]></imageExpression>
+			</image>
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="475" width="105" height="100" backcolor="#666666" uuid="6eb7cb61-0dd7-47a8-8475-5fa6c3a348dc"/>
+				<textField>
+					<reportElement style="Column header" x="0" y="0" width="104" height="73" forecolor="#000000" uuid="db8457c8-99e9-434f-b439-2d400dff2bcd"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="58" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Report">
+					<reportElement style="Column header" x="0" y="77" width="104" height="20" forecolor="#000000" uuid="e20c8a65-aded-41dc-a107-108a9159af99"/>
+					<box leftPadding="4" rightPadding="4"/>
+					<textElement textAlignment="Center">
+						<font size="16" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement mode="Transparent" x="42" y="73" width="20" height="1" backcolor="#FFFFFF" uuid="db6d7ead-4383-4f8c-81cf-1e3064eb6924"/>
+				</line>
+			</frame>
+		</band>
+	</background>
+	<title>
+		<band height="104" splitType="Stretch">
+			<staticText>
+				<reportElement style="Title" x="0" y="0" width="802" height="67" uuid="1dcadd54-7d50-4470-85ed-189e4d910b25"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="54" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Putovanje]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="SubTitle" x="232" y="67" width="568" height="37" uuid="862cb50c-5a5e-4906-a495-226e25115fb6"/>
+				<textElement textAlignment="Right">
+					<font size="26"/>
+				</textElement>
+				<text><![CDATA[Statički izvještaj]]></text>
+			</staticText>
+			<image>
+				<reportElement x="0" y="0" width="150" height="65" uuid="3777e91b-2bb7-42e3-bcc2-3ac72986d85b"/>
+				<imageExpression><![CDATA["reports/TransPlanlogo.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="25" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="97" y="5" width="705" height="20" backcolor="#666666" uuid="35d90a9b-bb7e-4ec4-bfa2-68be1967d6b2"/>
+				<staticText>
+					<reportElement style="Column header" x="0" y="0" width="80" height="15" uuid="487e6811-98be-4405-a0ad-33cd0f876cb5">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="37ec9cab-c9aa-4b2f-8432-07657646feda"/>
+					</reportElement>
+					<text><![CDATA[Identifikator]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="Column header" x="80" y="0" width="80" height="15" uuid="0e89413d-be40-49c1-b19b-c425bc1e5e36">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2c4742d1-8de2-409b-ad60-68dc0bb1a7e3"/>
+					</reportElement>
+					<text><![CDATA[Identifikator akcijske ponude]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="Column header" x="160" y="0" width="80" height="15" uuid="add1b21e-73eb-45cc-b4a0-7ee7d8292477">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6410a990-be6c-423a-8c51-1fbfb7bc99fa"/>
+					</reportElement>
+					<text><![CDATA[Identifikator tipa putovanja]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="Column header" x="240" y="0" width="90" height="15" uuid="7d6c09bb-0653-4442-b0f2-d9baa8b8d484">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8d187177-0f9b-4857-9f55-56a915e6d410"/>
+					</reportElement>
+					<text><![CDATA[Datum i vrijeme polaska]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="Column header" x="330" y="0" width="90" height="15" uuid="9162d12e-4b5c-417f-8881-9c5408969ad5">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="86438043-9d8a-4576-afab-19d342360852"/>
+					</reportElement>
+					<text><![CDATA[Datum i vrijeme povratka]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="Column header" x="420" y="0" width="90" height="15" uuid="3913613f-d744-44dd-990d-258d331c2017">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="864c6c76-be98-446d-a2a1-922868de3a2b"/>
+					</reportElement>
+					<text><![CDATA[Opis]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="Column header" x="510" y="0" width="90" height="15" uuid="b4c8023a-4610-47e5-9b75-2428293f1108">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c0df6e33-60a4-4995-9722-e5e24fe4ef48"/>
+					</reportElement>
+					<text><![CDATA[Mjesto polaska]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="Column header" x="600" y="0" width="104" height="15" uuid="4144793a-b144-4dbb-80ea-6de0da7ba71f">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d7a0d1ac-5220-49d9-a230-80298389ddb8"/>
+					</reportElement>
+					<text><![CDATA[Udaljenost u km]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<frame>
+				<reportElement x="97" y="1" width="705" height="15" uuid="89a3da05-fdde-4ffe-965f-cc476f72e3ab"/>
+				<textField>
+					<reportElement style="Detail" x="0" y="0" width="88" height="15" uuid="2e5e5598-3b0c-4823-80b0-651926c5b17b">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="37ec9cab-c9aa-4b2f-8432-07657646feda"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$F{Identifikator}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="Detail" x="88" y="0" width="88" height="15" uuid="77d7ce4e-3fb2-4c5e-8cfc-26ed4c5a46f2">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2c4742d1-8de2-409b-ad60-68dc0bb1a7e3"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$F{Identifikator akcijske ponude}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="Detail" x="176" y="0" width="88" height="15" uuid="d3ac39c5-a04c-4f69-ac80-7fb3e95d1839">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6410a990-be6c-423a-8c51-1fbfb7bc99fa"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$F{Identifikator tipa putovanja}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="Detail" x="264" y="0" width="88" height="15" uuid="e031b880-39d1-46ba-9dca-497ea3520341">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8d187177-0f9b-4857-9f55-56a915e6d410"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$F{Datum i vrijeme polaska}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="Detail" x="352" y="0" width="88" height="15" uuid="ea08531a-99cb-4059-be5d-072730941bba">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="86438043-9d8a-4576-afab-19d342360852"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$F{Datum i vrijeme povratka}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="Detail" x="440" y="0" width="88" height="15" uuid="013d744f-a0cc-4b87-8235-faba17a35bc1">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="864c6c76-be98-446d-a2a1-922868de3a2b"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$F{Opis}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="Detail" x="528" y="0" width="88" height="15" uuid="1982d4f0-32ab-49fe-88ee-03bb9d0d4286">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c0df6e33-60a4-4995-9722-e5e24fe4ef48"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$F{Mjesto polaska}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="Detail" x="616" y="0" width="88" height="15" uuid="0fd7a35e-b126-4be2-a008-0315129ddd92">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d7a0d1ac-5220-49d9-a230-80298389ddb8"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$F{Udaljenost u km}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="97" y="16" width="705" height="1" uuid="e5f21b91-7f24-498e-97a1-0e93db9225a4"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="39" splitType="Stretch">
+			<textField pattern="YYYY.MM.DD hh:mm">
+				<reportElement style="Column header" x="671" y="0" width="131" height="20" forecolor="#000000" uuid="95484ca0-40b4-4752-95d8-1afbc33c820b"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

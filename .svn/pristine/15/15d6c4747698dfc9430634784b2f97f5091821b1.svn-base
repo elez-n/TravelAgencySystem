@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  ParserStrategy.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class ParserStrategy
+ ***********************************************************************/
+
+package model;
+
+import java.util.*;
+
+/** @pdOid 22bc0300-2384-4102-881c-ce86d9ba93d6 */
+public class ParserStrategy {
+}

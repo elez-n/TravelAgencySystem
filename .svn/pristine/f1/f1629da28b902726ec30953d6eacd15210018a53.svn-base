@@ -1,0 +1,49 @@
+/***********************************************************************
+ * Module:  BrowserPanel.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class BrowserPanel
+ ***********************************************************************/
+
+package view;
+
+import java.awt.Color;
+import java.util.*;
+
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
+import javax.swing.tree.TreeSelectionModel;
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.BorderFactory;
+
+import model.Model;
+
+/** @pdOid 41c2f0c6-f2ff-4d6a-8a1f-c59c0aab4f7b */
+public class BrowserPanel extends JPanel {
+	private static final long serialVersionUID = 1L;
+	private JTree tree = null;
+
+    	public BrowserPanel(Model model) {
+    	    setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+    	    tree = new JTree(model.getTreeModel());
+
+    	    tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+
+    	    // Privremeno isključi custom renderer i listenere
+    	    // tree.setCellRenderer(new CustomTreeCellRenderer());
+    	    // CustomTreeSelectionListener customTreeSelectionListener = new CustomTreeSelectionListener();
+    	    // tree.addTreeSelectionListener(customTreeSelectionListener);
+    	    // tree.addMouseListener(customTreeSelectionListener);
+
+    	    JScrollPane scrollPane = new JScrollPane(tree);
+
+    	    add(scrollPane);
+
+    	    setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    	    Border blueBorder = BorderFactory.createMatteBorder(2, 2, 0, 2, Color.BLUE);
+    	    setBorder(BorderFactory.createCompoundBorder(blueBorder, getBorder()));
+
+    	    setBackground(Color.decode("#FFFFFF"));
+    	    tree.setBackground(Color.decode("#FFFFFF"));
+    	}
+    }

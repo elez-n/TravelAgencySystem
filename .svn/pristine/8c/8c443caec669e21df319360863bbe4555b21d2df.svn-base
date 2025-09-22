@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  TextField.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class TextField
+ ***********************************************************************/
+
+package view;
+
+import java.util.*;
+
+/** @pdOid 1a6c6f04-8db3-4c97-8200-448ac8965cd9 */
+public class TextField implements IInputField {
+}

@@ -1,0 +1,77 @@
+package view;
+
+import java.awt.Image;
+import java.awt.Toolkit;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JToolBar;
+
+/**
+ * {@code NavigationToolbar} predstavlja specijalizovani {@link JToolBar}
+ * koji se koristi u {@link SelectionDialog} prozoru, sa dugmadima
+ * isključivo za navigaciju kroz redove tabele.
+ * 
+ * Dugmad direktno pozivaju metode {@link SelectionDialog#handleFirst()},
+ * {@link SelectionDialog#handlePrev()}, {@link SelectionDialog#handleNext()},
+ * {@link SelectionDialog#handleLast()}.
+ * 
+ * @author G4
+ */
+public class NavigationToolbar extends JToolBar {
+    private JButton btnFirst, btnPrevious, btnNext, btnLast;
+
+    /**
+     * Kreira navigacioni toolbar i vezuje ga za dati {@link SelectionDialog}.
+     * 
+     * @param dialog instanca SelectionDialog-a na koju se odnose akcije dugmadi
+     */
+    public NavigationToolbar(SelectionDialog dialog) {
+        super("NavigationToolbar");
+        setFloatable(false);
+
+        btnFirst = createButton("first.png", "First", () -> dialog.handleFirst());
+        btnPrevious = createButton("previous.png", "Previous", () -> dialog.handlePrev());
+        btnNext = createButton("next.png", "Next", () -> dialog.handleNext());
+        btnLast = createButton("last.png", "Last", () -> dialog.handleLast());
+
+        add(btnFirst);
+        add(btnPrevious);
+        add(btnNext);
+        add(btnLast);
+
+        setAllButtonsEnabled(true);
+    }
+
+    /**
+     * Pomoćna metoda za kreiranje dugmeta sa ikonom, tooltipom i akcijom.
+     */
+    private JButton createButton(String iconFileName, String toolTip, Runnable action) {
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        ImageIcon icon = new ImageIcon(toolkit.getImage("resources/" + iconFileName));
+        Image scaledImage = icon.getImage().getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+
+        JButton button = new JButton(scaledIcon);
+        button.setToolTipText(toolTip);
+        button.setEnabled(true);
+        button.addActionListener(e -> action.run());
+
+        return button;
+    }
+
+    /**
+     * Omogućava ili onemogućava sva navigaciona dugmad.
+     */
+    public void setAllButtonsEnabled(boolean enabled) {
+        btnFirst.setEnabled(enabled);
+        btnPrevious.setEnabled(enabled);
+        btnNext.setEnabled(enabled);
+        btnLast.setEnabled(enabled);
+    }
+
+    public JButton getBtnFirst() { return btnFirst; }
+    public JButton getBtnPrevious() { return btnPrevious; }
+    public JButton getBtnNext() { return btnNext; }
+    public JButton getBtnLast() { return btnLast; }
+}

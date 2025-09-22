@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  BooleanField.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class BooleanField
+ ***********************************************************************/
+
+package view;
+
+import java.util.*;
+
+/** @pdOid c2c2b2bf-7a62-415e-beb3-3b98cdf222b2 */
+public class BooleanField implements IInputField {
+}

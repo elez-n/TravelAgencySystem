@@ -1,0 +1,361 @@
+package model;
+
+import db.DbManipulation;
+import db.StoredProcedures;
+import model.TreeElement.Column;
+import model.TreeElement.Table;
+
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+
+/**
+ * Klasa CustomTableModel predstavlja model tabele koji koristi
+ * metapodatke o tabeli i stored procedure za ucitavanje, dodavanje, izmjenu i brisanje podataka.
+ * 
+ * Nasljedjuje {@link GeneralTableModel} i koristi {@link StoredProcedures} za komunikaciju sa bazom.
+ * 
+ * @author G4
+ */
+public class CustomTableModel extends GeneralTableModel {
+
+    private static final long serialVersionUID = 1L;
+    private final Table tableMeta;
+    private final StoredProcedures procedures;
+    private ResultSet resultSet;
+    private String lastErrorMessage;
+
+    
+    /**
+     * Konstruktor koji inicijalizuje model na osnovu metapodataka o tabeli.
+     * Automatski ucitava podatke iz baze.
+     * @param tableMeta metapodaci o tabeli
+     */
+    public CustomTableModel(Table tableMeta) {
+        this.tableMeta = tableMeta;
+        this.procedures = new StoredProcedures(DbManipulation.createConnection());
+        this.columns = new ArrayList<>();
+        this.data = new ArrayList<>();
+        loadDataFromProcedure();
+    }
+
+    /**
+     * Učitava podatke iz baze pomocu stored procedure za citanje.
+     * Takodje postavlja kolone i osvjezava prikaz.
+
+     */
+    private void loadDataFromProcedure() {
+        try {
+            resultSet = procedures.executeRetrieve(tableMeta.getRetrieveSProc(), null);
+            setColumnsFromResultSet(resultSet);
+            populateData(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            this.data = new ArrayList<>();
+        }
+        fireTableStructureChanged();
+        fireTableDataChanged();
+    }
+
+    
+    /**
+     * Postavlja kolone modela na osnovu metapodataka iz {@link ResultSet}-a.
+     * 
+     * @param rs rezultat upita
+     * @throws SQLException ako dodje do greske pri citanju metapodataka
+     */
+    private void setColumnsFromResultSet(ResultSet rs) throws SQLException {
+        ResultSetMetaData meta = rs.getMetaData();
+        int colCount = meta.getColumnCount();
+
+        Set<String> pkCols = new HashSet<>();
+        try (ResultSet pkRs = procedures.getConnection()
+                .getMetaData().getPrimaryKeys(null, null, tableMeta.getName())) {
+            while (pkRs.next()) {
+                pkCols.add(pkRs.getString("COLUMN_NAME").toLowerCase());
+            }
+        }
+
+        this.columns = new ArrayList<>();
+        for (int i = 1; i <= colCount; i++) {
+            String label = meta.getColumnLabel(i); 
+            String dbName = meta.getColumnName(i);
+
+            Column col = new Column(label);
+            col.setType(meta.getColumnClassName(i));
+            col.setSize(meta.getPrecision(i));
+            col.setScale(meta.getScale(i));
+            col.setNullable(meta.isNullable(i) == ResultSetMetaData.columnNullable);
+            boolean isPrimary = false;
+            if (tableMeta != null) {
+                for (Column xmlCol : tableMeta.getAllColumns()) {
+                    if (xmlCol.getName() != null && xmlCol.getName().equals(label)) {
+                        isPrimary = Boolean.TRUE.equals(xmlCol.isPrimary());
+                        col.setAutoIncrement(xmlCol.getAutoIncrement());
+                        col.setNullable(xmlCol.isNullable());
+                        break;
+                    }
+                }
+            }
+            if (!isPrimary) {
+                isPrimary = pkCols.contains(dbName.toLowerCase());
+            }
+            col.setPrimary(isPrimary);
+
+            if (tableMeta != null) {
+                for (Column xmlCol : tableMeta.getAllColumns()) {
+                    if (xmlCol.getName() != null && xmlCol.getName().equals(label)) {
+                        if (xmlCol.getRefTable() != null) {
+                            col.setRefTable(xmlCol.getRefTable());
+                        }
+                        if (xmlCol.getRefColumn() != null) {
+                            col.setRefColumn(xmlCol.getRefColumn());
+                        }
+                        if (Boolean.TRUE.equals(xmlCol.isForeign())) {
+                            col.setForeign(true);
+                        }
+                        break;
+                    }
+                }
+            }
+
+            this.columns.add(col);
+
+            /*System.out.println("Column " + i + ": label=" + label + ", dbName=" + dbName +
+                    ", type=" + col.getType() + ", size=" + col.getSize() +
+                    ", scale=" + col.getScale() + ", PK=" + col.isPrimary() +
+                    ", nullable=" + col.isNullable() + ", autoInc=" + col.getAutoIncrement() +
+                    (col.getRefTable()!=null? (", refTable="+col.getRefTable()+", refColumn="+col.getRefColumn()): ""));*/
+        }
+    }
+
+    
+    /**
+     * Popunjava podatke modela na osnovu {@link ResultSet}-a
+     * @param rs rezultat upita 
+     * @throws SQLException ako dodje do greske pri citanju podataka
+     */
+    private void populateData(ResultSet rs) throws SQLException {
+        this.data.clear();
+        ResultSetMetaData meta = rs.getMetaData();
+        int colCount = meta.getColumnCount();
+
+        while (rs.next()) {
+            List<Object> row = new ArrayList<>();
+            for (int i = 1; i <= colCount; i++) {
+                row.add(rs.getObject(i));
+            }
+            this.data.add(row);
+        }
+    }
+
+
+    /**
+     * Vraca vrijednost celije na osnovu indeksa reda i kolone.
+     * @param rowIndex indeks reda
+     * @param columnIndex indeks kolone
+     * @return vrijednost celije
+     */
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        List<Object> row = data.get(rowIndex);
+        if (columnIndex >= row.size()) return null;
+
+        Object value = row.get(columnIndex);
+
+        if (value instanceof Boolean) {
+            return ((Boolean) value) ? "da" : "ne";
+        }
+
+        return value;
+    }
+
+    
+
+    /**
+     * Ponovo ucitava sve podatke iz baze
+     */
+    @Override
+    public void getAllData() {
+        loadDataFromProcedure();
+    }
+
+    
+    /**
+     * Brise red na osnovu jednog ID parametra
+     * 
+     * @param id vrijednost primarnog kljuca
+     * @return {@code true} ako je red uspjesno obrisan
+     */
+    @Override
+    public boolean deleteRowById(Object id) {
+        try {
+        	lastErrorMessage = null;
+            List<Object> params = new ArrayList<>();
+            params.add(id);
+            int affected = procedures.executeUpdate(tableMeta.getDeleteSProc(), params);
+            if (affected > 0) {
+                getAllData();
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            lastErrorMessage = e.getMessage();
+        }
+        return false;
+    }
+
+    
+    
+    /**
+     * Brise red na osnovu vise ID parametara (slozeni kljuc).
+     * 
+     * @param ids lista vrijednosti primarnih kljuceva
+     * @return {@code true} ako je red uspjesno obrisan
+     */
+    @Override
+    public boolean deleteRowById(List<Object> ids) {
+        try {
+        	lastErrorMessage = null;
+            int affected = procedures.executeUpdate(tableMeta.getDeleteSProc(), ids);
+            if (affected > 0) {
+                getAllData();
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            lastErrorMessage = e.getMessage();
+        }
+        return false;
+    }
+    
+
+    /**
+     * Dodaje novi red u tabelu na osnovu prosljedjenih parametara
+     * 
+     * @param params mapa parametara
+     * @return {@code true} ako je red uspjesno dodat
+     */
+    @Override
+    public boolean addRow(HashMap<String, Object> params) {
+        try {
+        	lastErrorMessage = null;
+            List<Object> orderedParams = new ArrayList<>();
+
+            for (Column col : tableMeta.getAllColumns()) {
+                if (Boolean.TRUE.equals(col.getAutoIncrement())) {
+                    continue;
+                }
+
+                String colName = col.getName();
+                Object value = null;
+
+                if (params.containsKey(colName)) {
+                    value = params.get(colName);
+                } else {
+                    for (String key : params.keySet()) {
+                        if (key.equalsIgnoreCase(colName)) {
+                            value = params.get(key);
+                            break;
+                        }
+                    }
+                }
+                orderedParams.add(value);
+            }
+
+            //System.out.println("Ordered params for ADD (XML order): " + orderedParams);
+
+            int affected = procedures.executeUpdate(tableMeta.getCreateSProc(), orderedParams);
+            if (affected > 0) {
+                getAllData(); 
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            lastErrorMessage=e.getMessage();
+        }
+        return false;
+    }
+
+
+    /**
+     * Azurira postojeci red u tabeli.
+     * 
+     * @param params mapa parametara
+     * @return {@code true} ako je red uspjesno izmjenjen
+     */
+    @Override
+    public boolean editRow(HashMap<String, Object> params) {
+        try {
+        	lastErrorMessage = null;
+            List<Object> orderedParams = new ArrayList<>();
+
+            for (Column col : tableMeta.getAllColumns()) {
+                String colName = col.getName();
+                Object value = null;
+
+                if (params.containsKey(colName)) {
+                    value = params.get(colName);
+                } else {
+                    for (String key : params.keySet()) {
+                        if (key.equalsIgnoreCase(colName)) {
+                            value = params.get(key);
+                            break;
+                        }
+                    }
+                }
+                orderedParams.add(value);
+            }
+
+            System.out.println("Ordered params (XML order): " + orderedParams);
+
+            int affected = procedures.executeUpdate(tableMeta.getUpdateSProc(), orderedParams);
+            return affected > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            lastErrorMessage=e.getMessage();
+            return false;
+        }
+    }
+
+
+    /**
+     * Ucitava red iz baze na osnovu ID vrijednosti
+     * 
+     * @param id vrijednost primarnog kljuca
+     * @return {@code true} ako je red uspjesno pronadjen i ucitan
+     */
+    @Override
+    public boolean getRowById(Object id) {
+        try {
+            List<Object> params = new ArrayList<>();
+            params.add(id);
+            List<List<Object>> rows = procedures.readAll(tableMeta.getRetrieveSProc(), params, null);
+            if (!rows.isEmpty()) {
+                this.data = rows;
+                fireTableStructureChanged();
+                fireTableDataChanged();
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public Table getTable() {
+        return this.tableMeta;
+    }
+
+	@Override
+	public String getLastErrorMesagge() {
+		return lastErrorMessage;
+	}
+}

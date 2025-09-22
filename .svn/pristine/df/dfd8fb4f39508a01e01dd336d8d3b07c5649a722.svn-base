@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  ActiveState.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class ActiveState
+ ***********************************************************************/
+
+package model;
+
+import java.util.*;
+
+/** @pdOid 907be3cd-7f35-4788-b076-7a22858d313f */
+public class ActiveState implements IAppState {
+}

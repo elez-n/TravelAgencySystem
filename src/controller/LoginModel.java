@@ -1,0 +1,143 @@
+package controller;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import db.DbManipulation;
+
+
+/**
+ * Model klase za rad sa korisničkim prijavama.
+ * 
+ * Klasa {@code LoginModel} omogućava autentifikaciju korisnika putem korisničkog imena i lozinke
+ * koristeći stored proceduru {@code pisg4.Login}. Takođe pruža metode za pristup informacijama o korisniku
+ * kao što su ID korisnika i nivo pristupa.
+ * 
+ * 
+ * 
+ * Nakon uspješne prijave, vrijednosti {@link #userId} i {@link #accessLevel} se postavljaju na osnovu
+ * podataka vraćenih iz baze.
+ * 
+ * 
+ * @author G4
+ */
+public class LoginModel {
+    /** Korisničko ime koje unosi korisnik. */
+    private String username;
+    
+    /** Lozinka korisnika. */
+    private String password;
+    
+    /** Jedinstveni identifikator korisnika nakon prijave. 
+     * Ako prijava nije uspješna, vrijednost je "-1". */
+    public static String userId = "-1";
+    
+    /** Nivo pristupa korisnika. 
+     * Ako prijava nije uspješna, vrijednost je -1. */
+    public static int accessLevel = -1;
+ 
+    /** @return trenutno korisničko ime. */
+    public String getUsername() {
+        return username;
+    }
+ 
+    /** 
+     * Postavlja korisničko ime. 
+     * @param username korisničko ime koje se postavlja.
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+ 
+    /** @return lozinka korisnika. */
+    public String getPassword() {
+        return password;
+    }
+ 
+    /** 
+     * Postavlja lozinku korisnika. 
+     * @param password lozinka koja se postavlja.
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+ 
+    /**
+     * Vrši prijavu korisnika koristeći korisničko ime i lozinku.
+     * 
+     * Ova metoda koristi stored proceduru {@code pisg4.Login} za autentifikaciju korisnika
+     * i postavlja statičke varijable {@link #userId} i {@link #accessLevel} na osnovu
+     * rezultata iz baze podataka.
+     * 
+     * 
+     * @param username korisničko ime.
+     * @param password lozinka.
+     * @return {@code true} ako su podaci ispravni i prijava uspješna, 
+     *         {@code false} u suprotnom.
+     */
+    public boolean login(String username, String password) {
+        DbManipulation dbManipulations = DbManipulation.createConnection();
+        Connection conn = DbManipulation.dbManipulations.get(0).getConnection();
+
+        try {
+            CallableStatement callableStatement = conn.prepareCall("{call pisg4.Login(?,?)}");
+            callableStatement.setString(1, username);
+            callableStatement.setString(2, password);
+
+            ResultSet resultSet = callableStatement.executeQuery();
+
+            if (resultSet.next()) {
+                accessLevel = resultSet.getInt("AccessLevel");
+                userId = resultSet.getString("UserId");
+
+                //System.out.println("Access level: " + accessLevel + " userId: " + userId);
+                return true;
+            }
+
+            return false;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /** Podrazumijevani konstruktor. */
+    public LoginModel() {
+        super();
+    }
+	
+    /** 
+     * @return ID korisnika nakon uspješne prijave. 
+     * Ako prijava nije izvršena ili je neuspješna, vraća "-1".
+     */
+    public String getUserId() {
+        return userId;
+    }
+
+    /** 
+     * @return nivo pristupa korisnika nakon uspješne prijave. 
+     * Ako prijava nije izvršena ili je neuspješna, vraća -1.
+     */
+    public int getAccessLevel() {
+        return accessLevel;
+    }
+
+    /**
+     * Postavlja ID korisnika (koristi se npr. pri ručnom resetovanju sesije).
+     * @param userId ID korisnika koji se postavlja.
+     */
+    public static void setUserId(String userId) {
+        LoginModel.userId = userId;
+    }
+
+    /**
+     * Postavlja nivo pristupa korisnika (koristi se npr. pri ručnom resetovanju sesije).
+     * @param accessLevel nivo pristupa koji se postavlja.
+     */
+    public static void setAccessLevel(int accessLevel) {
+        LoginModel.accessLevel = accessLevel;
+    }
+}

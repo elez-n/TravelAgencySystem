@@ -1,0 +1,156 @@
+package view;
+
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import model.CustomTableModel;
+import model.TreeElement.Column;
+
+public class FormPanel extends JPanel {
+
+    private List<IInputField> inputFields;
+    private JPanel fieldsPanel;
+    private JButton btnAccept, btnCancel;
+    private JScrollPane scrollPane;
+
+    public FormPanel() {
+        inputFields = new ArrayList<>();
+        setLayout(new BorderLayout());
+
+        // MigLayout sa wrap 4 -> 4 polja u jednom redu
+        fieldsPanel = new JPanel(new MigLayout("wrap 4, gap 10px 10px", "[grow, fill]", "[]10[]"));
+        scrollPane = new JScrollPane(fieldsPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        add(scrollPane, BorderLayout.CENTER);
+
+        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        btnAccept = new JButton("Accept");
+        btnCancel = new JButton("Cancel");
+        buttonsPanel.add(btnAccept);
+        buttonsPanel.add(btnCancel);
+        add(buttonsPanel, BorderLayout.SOUTH);
+    }
+
+    /**
+     * Prikazuje red iz CustomTableModel. Polja su needitabilna.
+     */
+    public void displayRow(CustomTableModel model, int rowIndex) {
+        fieldsPanel.removeAll();
+        inputFields.clear();
+
+        List<Column> columns = model.getColumns();
+
+        for (int i = 0; i < columns.size(); i++) {
+            Column col = columns.get(i);
+            Object value = model.getValueAt(rowIndex, i);
+
+            IInputField field = FieldGenerator.createInput(col);
+            field.setColumnCode(col.code); // postavljanje koda kolone
+
+            field.setValue(value != null ? value : "");
+            field.setEnabled(false); // samo za prikaz
+
+            inputFields.add(field);
+            fieldsPanel.add((Component) field, "growx");
+        }
+
+        fieldsPanel.revalidate();
+        fieldsPanel.repaint();
+    }
+
+    /**
+     * Priprema formu za unos novog reda. Polja su editabilna.
+     */
+    public void prepareNewRow(List<Column> columns) {
+        fieldsPanel.removeAll();
+        inputFields.clear();
+
+        for (Column col : columns) {
+            IInputField field = FieldGenerator.createInput(col);
+            field.setColumnCode(col.code); // postavljanje koda kolone
+            field.setValue(null);
+            field.setEnabled(true);
+
+            inputFields.add(field);
+            fieldsPanel.add((Component) field, "growx");
+        }
+
+        if (!inputFields.isEmpty() && inputFields.get(0) instanceof TextField) {
+            ((TextField) inputFields.get(0)).requestFocus();
+        }
+
+        fieldsPanel.revalidate();
+        fieldsPanel.repaint();
+    }
+
+    public JButton getBtnAccept() {
+        return btnAccept;
+    }
+
+    public JButton getBtnCancel() {
+        return btnCancel;
+    }
+
+    public List<IInputField> getInputFields() {
+        return inputFields;
+    }
+
+    public void clearAll() {
+        for (IInputField input : inputFields) {
+            input.setValue(null);
+        }
+    }
+
+    public void enableInputs() {
+        for (IInputField input : inputFields) {
+            input.setEnabled(true);
+        }
+    }
+
+    /**
+     * Vraća mapu kolona i vrijednosti za slanje u proceduru.
+     * Samo polja koja nisu primarna i/ili nisu null se šalju za update.
+     */
+    public HashMap<String, Object> getValues() {
+		HashMap<String, Object> res = new HashMap<String, Object>();
+		String name = "";
+		for (IInputField input : inputFields) {
+			if (input.getName().endsWith("*")) {
+				name = input.getName().substring(0, input.getName().length() - 1);
+			} else
+				name = input.getName();
+			res.put(name, input.getValue());
+
+		}
+		return res;
+
+	}
+
+    public void fillInputs(List<Object> row) {
+        for (int i = 0; i < row.size(); i++) {
+            inputFields.get(i).setValue(row.get(i));
+        }
+    }
+
+    public void disablePrimaryInputs() {
+        for (IInputField input : inputFields) {
+            if (input.isPrimary()) {
+                input.setEnabled(false);
+            }
+        }
+    }
+
+    public boolean validateInputs() {
+        for (IInputField input : inputFields) {
+            if (input.getValue() == null && !input.isNullable() && !input.isPrimary()) {
+                return false;
+            }
+        }
+        return true;
+    }
+}

@@ -1,0 +1,13 @@
+/***********************************************************************
+ * Module:  Statusbar.java
+ * Author:  Korisnik
+ * Purpose: Defines the Class Statusbar
+ ***********************************************************************/
+
+package view;
+
+import java.util.*;
+
+/** @pdOid 0e39849c-795a-47b2-bd1b-0c437a7a8af9 */
+public class Statusbar {
+}

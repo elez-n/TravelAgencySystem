@@ -1,0 +1,266 @@
+package view;
+
+import model.CustomTableModel;
+import model.TreeElement;
+
+import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumnModel;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+/**
+ * Panel koji prikazuje tabelu sa podacima u glavnom prozoru.
+ * Implementira sve zahteve za tabelarni prikaz podataka.
+ */
+public class TableFrame extends JPanel {
+
+    private final JTable table;
+    private final CustomTableModel tableModel;
+    private final TreeElement.Table tableMeta;
+    private final JTable rowNumberTable;
+    private final JScrollPane scrollPane;
+
+    public TableFrame(TreeElement.Table tableMeta) {
+        this.tableMeta = tableMeta;
+        this.tableModel = new CustomTableModel(tableMeta);
+        this.table = new JTable(tableModel);
+        
+        setLayout(new BorderLayout());
+        
+        // Dodaj margin oko tabele
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        
+        // Dodaj deblji border oko celog panela
+        setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(100, 100, 100), 2), // Spoljašnji border
+            BorderFactory.createEmptyBorder(20, 20, 20, 20) // Unutrašnji margin
+        ));
+        
+        // Postavi eksplicitnu veličinu panela
+        //setPreferredSize(new Dimension(800, 600));
+        //setMinimumSize(new Dimension(600, 400));
+        
+        // Postavi tabelu
+        setupTable();
+        
+        // Kreiraj tabelu za brojeve redova
+        this.rowNumberTable = createRowNumberTable();
+        
+        // Kreiraj scroll pane sa obe tabele
+        this.scrollPane = createScrollPane();
+        
+        // Dodaj toolbar sa nazivom tabele
+        add(createToolBar(), BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
+        
+        // Učitaj podatke
+        tableModel.getAllData();
+        
+        // Dinamički prilagodi širine kolona
+        adjustColumnWidths();
+        
+        // Osiguraj da je panel vidljiv
+        setVisible(true);
+        setOpaque(true);
+    }
+    
+    private void setupTable() {
+        // Postavi renderer za ćelije
+        table.setDefaultRenderer(Object.class, new CustomCellRenderer());
+        
+        // Postavi selekciju
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.setRowSelectionAllowed(true);
+        table.setColumnSelectionAllowed(false);
+        
+        // Postavi boje
+        table.setGridColor(Color.LIGHT_GRAY);
+        table.setSelectionBackground(new Color(51, 153, 255));
+        table.setSelectionForeground(Color.WHITE);
+        
+        // Postavi header
+        table.getTableHeader().setBackground(new Color(70, 130, 180));
+        table.getTableHeader().setForeground(Color.WHITE);
+        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        
+        // Postavi font za tabelu
+        table.setFont(new Font("Arial", Font.PLAIN, 11));
+        table.setRowHeight(25);
+        
+        // Osiguraj da scroll barovi rade
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        table.setFillsViewportHeight(false);
+    }
+    
+    private JTable createRowNumberTable() {
+        JTable rowTable = new JTable(new RowNumberTableModel());
+        rowTable.setPreferredScrollableViewportSize(new Dimension(50, 0));
+        rowTable.setRowHeight(table.getRowHeight());
+        rowTable.setRowSelectionAllowed(false);
+        rowTable.setColumnSelectionAllowed(false);
+        rowTable.setCellSelectionEnabled(false);
+        rowTable.setFocusable(false);
+        rowTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        rowTable.setGridColor(Color.LIGHT_GRAY);
+        rowTable.setBackground(new Color(240, 240, 240));
+        rowTable.setFont(new Font("Arial", Font.BOLD, 11));
+        
+        // Postavi širinu kolone za brojeve redova
+        rowTable.getColumnModel().getColumn(0).setPreferredWidth(50);
+        rowTable.getColumnModel().getColumn(0).setMaxWidth(50);
+        rowTable.getColumnModel().getColumn(0).setMinWidth(50);
+        
+        return rowTable;
+    }
+    
+    private JScrollPane createScrollPane() {
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setRowHeaderView(rowNumberTable);
+        scrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER, createCornerComponent());
+        
+        // Uvek prikaži scroll barove
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        
+        // Postavi fiksnu veličinu viewport-a da bi scroll barovi radili
+        scrollPane.setPreferredSize(new Dimension(600, 400));
+        scrollPane.setViewportBorder(BorderFactory.createLineBorder(Color.GRAY));
+        
+        // Osiguraj da scroll barovi rade
+        scrollPane.setWheelScrollingEnabled(true);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.getHorizontalScrollBar().setUnitIncrement(16);
+        
+        // Ukloni border od scroll pane-a
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        
+        return scrollPane;
+    }
+    
+    private JComponent createCornerComponent() {
+        JPanel corner = new JPanel();
+        corner.setBackground(new Color(70, 130, 180));
+        corner.setPreferredSize(new Dimension(50, 25));
+        return corner;
+    }
+    
+    private JToolBar createToolBar() {
+        JToolBar toolBar = new JToolBar();
+        toolBar.setFloatable(false);
+        toolBar.setBackground(new Color(240, 240, 240));
+        
+        JLabel titleLabel = new JLabel("Tabela: " + tableMeta.getName());
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        toolBar.add(titleLabel);
+        toolBar.addSeparator();
+        
+        JButton refreshBtn = new JButton("Osveži");
+        refreshBtn.addActionListener(e -> {
+            tableModel.getAllData();
+            adjustColumnWidths();
+        });
+        toolBar.add(refreshBtn);
+        
+        return toolBar;
+    }
+    
+    private void adjustColumnWidths() {
+        TableColumnModel columnModel = table.getColumnModel();
+        for (int i = 0; i < columnModel.getColumnCount(); i++) {
+            int width = calculateColumnWidth(i);
+            columnModel.getColumn(i).setPreferredWidth(width);
+            columnModel.getColumn(i).setMinWidth(width);
+        }
+    }
+    
+    private int calculateColumnWidth(int columnIndex) {
+        TreeElement.Column column = tableModel.getColumn(columnIndex);
+        if (column == null) return 100;
+        
+        String columnName = column.getName();
+        int maxWidth = columnName.length() * 10; // Minimum širina za naziv kolone
+        
+        // Proveri podatke u koloni
+        for (int row = 0; row < tableModel.getRowCount(); row++) {
+            Object value = tableModel.getValueAt(row, columnIndex);
+            if (value != null) {
+                int cellWidth = value.toString().length() * 8;
+                maxWidth = Math.max(maxWidth, cellWidth);
+            }
+        }
+        
+        // Dodaj padding
+        maxWidth += 20;
+        
+        // Ograniči maksimalnu širinu
+        return Math.min(maxWidth, 300);
+    }
+    
+    // Custom Cell Renderer za formatiranje redova
+    private class CustomCellRenderer extends DefaultTableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, 
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            
+            if (isSelected) {
+                c.setBackground(table.getSelectionBackground());
+                c.setForeground(table.getSelectionForeground());
+            } else {
+                // Alternirajuće boje za redove
+                if (row % 2 == 0) {
+                    c.setBackground(new Color(255, 255, 255)); // Beo
+                } else {
+                    c.setBackground(new Color(245, 245, 245)); // Svetlo sivi
+                }
+                c.setForeground(Color.BLACK);
+            }
+            
+            // Centriraj tekst
+            setHorizontalAlignment(SwingConstants.CENTER);
+            
+            return c;
+        }
+    }
+    
+    // Model za tabelu sa brojevima redova
+    private class RowNumberTableModel extends AbstractTableModel {
+        @Override
+        public int getRowCount() {
+            return tableModel.getRowCount();
+        }
+        
+        @Override
+        public int getColumnCount() {
+            return 1;
+        }
+        
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            return rowIndex + 1;
+        }
+        
+        @Override
+        public String getColumnName(int column) {
+            return "#";
+        }
+    }
+    
+    public JTable getTable() {
+        return table;
+    }
+    
+    public CustomTableModel getTableModel() {
+        return tableModel;
+    }
+    
+    public TreeElement.Table getTableMeta() {
+        return tableMeta;
+    }
+}
+
+

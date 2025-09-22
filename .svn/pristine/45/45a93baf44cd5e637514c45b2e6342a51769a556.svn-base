@@ -1,0 +1,113 @@
+package model;
+
+import java.util.Vector;
+
+public abstract class TreeElement {
+	protected String code = null;
+	public String name = null;
+
+	private Vector<TreeElement> treeElements = new Vector<TreeElement>();
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return this.name;
+	}
+
+	public int getIndexOfElement(TreeElement element) {
+		return treeElements.indexOf(element);
+	}
+
+	public void addElement(TreeElement element) {
+		treeElements.add(element);
+	}
+
+	public Vector<TreeElement> getAllElements() {
+		return treeElements;
+	}
+
+	public TreeElement getElementAt(int index) {
+		return treeElements.get(index);
+	}
+
+	public String getName() {
+		return name;
+	}
+	
+	/**
+	 * Klasa koja predstavlja paket u modelu stabla.
+	 *
+	 */
+	public static class Package extends TreeElement {
+
+		public Package() {
+			// TODO Auto-generated constructor stub
+		}
+
+		public Package(String name) {
+			// TODO Auto-generated constructor stub
+			this.name = name;
+		}
+	}
+	
+public static class Table extends TreeElement{
+		
+		private Vector<Table> refrences = new Vector<TreeElement.Table>();
+		
+		private String createSProc = null;
+		private String retrieveSProc = null;
+		private String updateSProc = null;
+		private String deleteSProc = null;
+		public String getCreateSProc() {
+			return createSProc;
+		}
+		public void setCreateSProc(String createSProc) {
+			this.createSProc = createSProc;
+		}
+		public String getRetrieveSProc() {
+			return retrieveSProc;
+		}
+		public void setRetrieveSProc(String retrieveSProc) {
+			this.retrieveSProc = retrieveSProc;
+		}
+		public String getUpdateSProc() {
+			return updateSProc;
+		}
+		public void setUpdateSProc(String updateSProc) {
+			this.updateSProc = updateSProc;
+		}
+		public String getDeleteSProc() {
+			return deleteSProc;
+		}
+		public void setDeleteSProc(String deleteSProc) {
+			this.deleteSProc = deleteSProc;
+		}
+				
+		public void addReference(Table reference) {
+			refrences.add(reference);
+		}
+		
+		public Vector<Table> getAllRefernces(){
+			return refrences;
+		}	
+			
+	}
+
+	public static class Column extends TreeElement{
+		private Boolean primary = null;
+		private Boolean nullable = null;
+		
+		public Boolean isPrimary() {
+			return primary;
+		}
+		public void setPrimary(Boolean primary) {
+			this.primary = primary;
+		}
+		public Boolean isNullable() {
+			return nullable;
+		}
+		public void setNullable(Boolean nullable) {
+			this.nullable = nullable;
+		}
+	}
+}
